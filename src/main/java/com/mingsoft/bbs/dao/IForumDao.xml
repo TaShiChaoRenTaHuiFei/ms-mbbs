@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mingsoft.bbs.dao.IForumDao">
+
+	<!--mbbs_forum表部分-->
+	<resultMap id="resultMap" type="com.mingsoft.bbs.entity.ForumEntity">
+		<id column="FORUM_CATEGORY_ID" property="forumId" /><!-- 关联表category的类比ID 
+			category_id字段 -->
+		<id column="category_id" property="categoryId" /><!-- 关联表category的类比ID 
+			category_id字段 -->
+			<result column="category_smallimg" property="categorySmallImg" /><!-- 
+			关联表category的略缩图地址 category_smallimg字段 -->
+		<result column="category_description" property="categoryDescription" /> 
+		<result column="category_title" property="categoryTitle" /><!-- 
+			关联表category的类比标题 category_title字段 -->
+		<result column="category_sort" property="categorySort" /><!-- 关联表category的类比排序 
+			category_sort字段 -->
+		<result column="category_datetime" property="categoryDateTime" />
+		<result column="category_appId" property="categoryAppId" /><!-- 
+			关联表category的类比发布时间 category_datetime字段 -->
+		<result column="category_managerid" property="categoryManagerId" /><!-- 
+			关联表category的类发布用户ID "category_managerid"字段 -->
+		<result column="category_modelId" property="categoryModelId" /><!-- 
+			关联表category的所属模块ID category_modelid字段 -->
+		<result column="category_categoryid" property="categoryCategoryId" /><!-- 
+			关联表category的父类别ID category_categoryid字段 -->
+		<result column="total" property="forumSubjectCount" /><!-- 发帖总数 -->
+		<result column="todayTotal" property="forumTodaySubjectCount" /><!-- 今日发帖总数 -->
+		<result column="yestedayTotal" property="forumYesterdaySubjectCount" /><!--  昨日发帖总数 -->
+		<result column="FORUM_LAST_SUBJECT_TIME" property="forumLastSubjectTime" />	 <!-- 最后评论时间 -->
+		<result column="FORUM_COMMENT_COUNT" property="forumCommentCount" /> <!-- 评论总数 -->
+		<result column="lastDatetime" property="forumLastCommentTime" />	 <!-- 最后评论时间 -->
+	</resultMap>
+	
+	<!-- 添加mbbs_forum表中的内容 -->
+	<insert id="saveEntity" 
+		parameterType="com.mingsoft.bbs.entity.ForumEntity">
+		insert into mbbs_forum
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="forumId != null">FORUM_ID,</if><!-- 关联表category的类比ID category_id字段 -->
+			<if test="forumSubjectCount != null">FORUM_SUBJECT_COUNT,</if><!--帖子总数 -->
+			<if test="forumTodaySubjectCount != null">FORUM_TODAY_SUBJECT_COUNT,</if><!-- 今日发帖总数 -->
+			<if test="forumYesterdaySubjectCount != null">FORUM_YESTERDAY_SUBJECT_COUNT,</if><!-- 昨日发帖总数-->
+			<if test="forumCommentCount != null">FORUM_COMMENT_COUNT,</if><!-- 评论总数-->
+			<if test="forumLastCommentTime != null">FORUM_LAST_COMMENT_TIME</if><!--最后评论时间-->
+			
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="forumId != null">#{forumId},</if>
+			<if test="forumSubjectCount != null">#{forumSubjectCount},</if>
+			<if test="forumTodaySubjectCount !=null">#{forumTodaySubjectCount},</if>
+			<if test="forumYesterdaySubjectCount !=null">#{forumYesterdaySubjectCount},</if>
+			<if test="forumCommentCount !=null">#{forumCommentCount},</if>
+			<if test="forumLastCommentTime !=null">#{forumLastCommentTime}</if>
+		</trim>
+	</insert>
+	
+	<!-- 查询该站点和模块下该父板块id的子栏目 开始 -->
+	<select id="queryForum" resultMap="resultMap" parameterType="int">
+		select
+		category.*,count(basic_id) total,count(comment_id) totalComment,max(comment.COMMENT_TIME) lastDatetime
+		from category left join basic  on  basic_categoryid in (select temp.category_id from category temp where temp.category_categoryid=category.category_id) left
+		join `comment` on `comment`.COMMENT_BASICID=basic.BASIC_ID
+		where
+		CATEGORY_APPID = #{appId} and CATEGORY_MODELID=#{modelId}
+		<if test="categoryCategoryId != null">
+			and (CATEGORY_CATEGORYID = #{categoryCategoryId}
+			<if test="categoryId != null">
+				or CATEGORY_ID = #{categoryId}
+			</if>
+			)		
+		</if>
+		
+		<if test="categoryCategoryId==null">
+			<if test="categoryId != null">
+				and  CATEGORY_ID = #{categoryId}
+			</if>
+		</if>
+		group by
+		CATEGORY_ID
+	</select>
+	<!-- 查询该站点和模块下该父板块id的子栏目 结束 -->
+
+	<!-- 板块统计 -->
+	<select id="statistics"  resultType="java.util.HashMap">
+	
+			<if test="categoryId != null">
+			call p_bbs_statistics(#{appId},#{modelId},#{categoryId});
+			</if>		
+			<if test="categoryId == null">
+			call p_bbs_statistics(#{appId},#{modelId},-1);
+			</if>				
+			
+	</select>
+	
+	<select id="getByForumId" resultMap="resultMap">
+			select category.*
+			from category 
+			where category_modelId=#{modelId}
+			and category_appId=#{appId}
+			and category_id = #{categoryId}
+	</select>
+	
+	<!-- 根据ID查询开始 -->
+	<select id="getEntity" resultMap="resultMap" parameterType="int">
+		select category.*
+			from category  where category_id = #{categoryId}
+	</select>
+	<!-- 根据ID查询结束 -->
+	
+	
+	<!-- 更新帖子统计信息 -->
+	<update id="updateStatisticsInfo" parameterType="com.mingsoft.bbs.entity.ForumEntity">
+		update mbbs_forum
+		<set>
+			<if test="forumTodaySubjectCount gt 0">FORUM_TODAY_SUBJECT_COUNT=#{forumTodaySubjectCount},</if>
+			<if test="forumYesterdaySubjectCount gt 0">FORUM_YESTERDAY_SUBJECT_COUNT=#{forumYesterdaySubjectCount},</if>
+			<if test="forumTotalSubject gt 0">FORUM_SUBJECT_COUNT=#{forumTotalSubject},</if>
+			<if test="forumLastSubjectTime!=null">FORUM_LAST_SUBJECT_TIME=#{forumLastSubjectTime},</if>
+			<if test="forumCommentCount gt 0">FORUM_COMMENT_COUNT=#{forumCommentCount},</if>
+			<if test="forumLastCommentTime!=null">FORUM_LAST_COMMENT_TIME=#{forumLastCommentTime}</if>
+		</set>
+		where FORUM_ID = #{categoryId}
+	</update>
+	
+</mapper>

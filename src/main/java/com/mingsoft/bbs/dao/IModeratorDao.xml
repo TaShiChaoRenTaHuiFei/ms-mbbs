@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 用户绑定类别的持久化层的XML配置文件 -->
+<mapper namespace="com.mingsoft.bbs.dao.IModeratorDao">
+	
+	<sql id="moderator">
+		m.MODERATOR_PEOPLE_ID,m.MODERATOR_FORUM_ID,m.MODERATOR_TYPE_ID,
+		p.PEOPLE_ID,p.PEOPLE_NAME,p.PEOPLE_APP_ID,
+		u.PU_PEOPLE_ID,u.PU_NICKNAME,u.PU_ICON,u.PU_APP_ID,p.PEOPLE_PHONE, p.PEOPLE_MAIL,
+		t.CATEGORY_ID,t.CATEGORY_TITLE,t.CATEGORY_APPID,t.category_modelId 
+	</sql>
+	
+	<resultMap id="resultModerator" type="com.mingsoft.bbs.entity.ModeratorEntity">
+		<!-- 板块id -->
+        <id column="MODERATOR_FORUM_ID" property="moderatorForumId" />
+        <!-- 版主id -->
+        <result column="MODERATOR_PEOPLE_ID" property="moderatorPeopleId" /> 
+        <!-- 版主类型id -->
+        <result column="MODERATOR_TYPE_ID" property="moderatorTypeId" /> 
+	</resultMap>
+	
+	<!-- 板块列表,不带板块类型 -->
+	<resultMap id="resultMap" type="com.mingsoft.bbs.entity.ModeratorEntity">
+		<!-- 板块id -->
+        <result column="MODERATOR_FORUM_ID" property="moderatorForumId" />
+        <!-- 版主id -->
+        <result column="MODERATOR_PEOPLE_ID" property="moderatorPeopleId" /> 
+        <!-- 版主类型id -->
+        <result column="MODERATOR_TYPE_ID" property="moderatorTypeId" /> 
+		<!-- 版主类别关联 -->
+		<association  property="moderatorType" column="MODERATOR_TYPE_ID" 
+		javaType="com.mingsoft.basic.entity.CategoryEntity">
+			<id property="categoryId" column="MODERATOR_TYPE_ID" />
+			<result property="categoryTitle" column="CATEGORY_TITLE" />
+			<result property="categoryAppId" column="CATEGORY_APPID" />
+			<result property="categoryModelId" column="category_modelId" />
+		</association>
+		<!-- 版主关联 -->
+		<association property="moderatorPeople" column="MODERATOR_PEOPLE_ID"
+		javaType="com.mingsoft.people.entity.PeopleEntity">
+			<id property="peopleId" column="MODERATOR_PEOPLE_ID" />  
+			<result property="peopleName" column="PEOPLE_NAME" />
+			<result property="peopleAppId" column="PEOPLE_APP_ID" />
+			<association property="peopleUser" column="MODERATOR_PEOPLE_ID"
+		javaType="com.mingsoft.people.entity.PeopleUserEntity">
+			<id property="peopleUserPeopleId" column="MODERATOR_PEOPLE_ID" />  
+			<result property="peopleUserNickName" column="PU_NICKNAME" />
+			<result property="peopleUserIcon" column="PU_ICON" />
+			<result property="peopleUserAppId" column="PU_APP_ID" />
+		</association>
+		</association>
+	</resultMap>
+	
+	<!-- 板块下拥有的所有版主 -->
+	<resultMap id="resultCategoryMap" type="com.mingsoft.bbs.entity.ModeratorEntity">
+		<!-- 版主 -->
+		<result property="moderatorPeopleList"  column="MODERATOR_PEOPLES" />
+		<!-- 所有版主类型id -->
+		<result property="moderatorTypeIds"  column="MODERATOR_IDS" />
+		<!-- 板块id -->
+		<result column="CATEGORY_ID" property="moderatorForumId" /> 
+		<!-- 板块关系映射 -->
+		<association  column="CATEGORY_ID" property="moderatorForum" 
+		javaType="com.mingsoft.bbs.entity.ForumEntity">
+			<id property="forumCategoryId" column="CATEGORY_ID" />
+			<result property="categoryTitle" column="CATEGORY_TITLE" />
+		</association>
+	</resultMap>
+	
+	
+	<!-- 为用户保存管理的类别 开始 -->
+	<insert id="saveEntity" parameterType="com.mingsoft.bbs.entity.ModeratorEntity">
+		insert into mbbs_forum_moderator
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="moderatorPeopleId &gt;0">MODERATOR_PEOPLE_ID,</if>
+			<if test="moderatorForumId &gt;0">MODERATOR_FORUM_ID,</if>
+			<if test="moderatorTypeId &gt;0">MODERATOR_TYPE_ID,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="moderatorPeopleId &gt;0">#{moderatorPeopleId},</if>
+			<if test="moderatorForumId &gt;0">#{moderatorForumId},</if>
+			<if test="moderatorTypeId &gt;0">#{moderatorTypeId}</if>
+		</trim>
+	</insert>
+	<!-- 为用户保存管理的类别 结束 -->
+	
+	<!--修改版主信息开始 -->
+	<update id="updateEntity" parameterType="com.mingsoft.bbs.entity.ModeratorEntity">  
+	   update mbbs_forum_moderator
+	    <set>
+			<if test="moderatorTypeId &gt;0">MODERATOR_TYPE_ID = #{moderatorTypeId},</if>
+		</set>
+		<where>
+			MODERATOR_PEOPLE_ID=#{moderatorPeopleId} 
+			AND MODERATOR_FORUM_ID =  #{moderatorForumId}
+		</where>
+	</update>
+	<!--修改版主信息结束 -->
+	
+	
+	
+	
+	<!-- =====20150611 修改==== -->	
+	<!--删除指定板块下多个版主开始  -->
+	<delete id="deleteByForumId" >
+		DELETE  FROM mbbs_forum_moderator
+		<where>
+			and MODERATOR_FORUM_ID = #{forumId}
+    		and MODERATOR_PEOPLE_ID in <foreach collection="ids" item="item" index="index" 
+			open="(" separator="," close=")">#{item}</foreach>
+		</where>
+	</delete>
+	<!--删除指定板块下多个版主结束 -->
+	
+	
+		<!-- 通过用户id查询关联的板块 开始 -->
+	<select id="getByPeopleId" resultMap="resultMap">
+		select
+		<include refid="moderator" /> 
+		from mbbs_forum_moderator m
+		LEFT JOIN people p ON (m.MODERATOR_PEOPLE_ID = p.people_id)
+		LEFT JOIN category t ON (m.MODERATOR_TYPE_ID = t.category_Id)
+		LEFT JOIN people_user u ON (m.MODERATOR_PEOPLE_ID = u.PU_PEOPLE_ID)
+		<where>
+			p.PEOPLE_APP_ID=t.CATEGORY_APPID
+			and m.MODERATOR_FORUM_ID = #{forumId}
+			and p.PEOPLE_Id = #{peopleId}
+		</where>
+	</select>
+	<!-- 通过用户id查询关联的板块 结束 -->
+	
+		
+	<!-- 通过版块id和版主站点id查询关联的版主开始 -->
+	<select id="queryByForumId" resultMap="resultMap" >
+		select
+		<include refid="moderator" /> 
+		from mbbs_forum_moderator m
+		LEFT JOIN people p ON (m.MODERATOR_PEOPLE_ID = p.people_id)
+		LEFT JOIN category t ON (m.MODERATOR_TYPE_ID = t.category_Id)
+		LEFT JOIN people_user u ON (m.MODERATOR_PEOPLE_ID = u.PU_PEOPLE_ID)
+		<where>
+			p.PEOPLE_APP_ID=t.CATEGORY_APPID
+			and p.PEOPLE_APP_ID = #{appId}
+			and m.MODERATOR_FORUM_ID = #{forumId}
+		</where>
+	</select>
+	<!-- 通过版块id查询关联的版主 结束 -->
+	
+	
+	
+	<!-- 通过用户id查询版主实体 开始 -->
+	<select id="getByPeopleIdAndForumIds" resultMap="resultMap" >
+		select * from mbbs_forum_moderator 
+		<where>
+			MODERATOR_PEOPLE_ID=#{peopleId}
+			and MODERATOR_FORUM_ID in<foreach collection="forumIds" item="item" index="index" 
+			open="(" separator="," close=")">#{item}</foreach>
+		</where>
+	</select>
+	<!-- 通过用户id查询版主实体  结束 -->
+</mapper>

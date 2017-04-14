@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mingsoft.bbs.dao.IFunctionDao">
+	<sql id="function">
+		function_id,function_title,function_method,function_app_id
+	</sql>
+	
+	<!--功能列表的返回值 -->
+	<resultMap id="resultMap" type="com.mingsoft.bbs.entity.FunctionEntity">
+		<id column="function_id" property="functionId" />							<!-- 功能自增长id -->
+		<result column="function_app_id" property="functionAppId" />				<!-- 功能对应的应用id-->
+		<result column="function_title" property="functionTitle" />					<!-- 功能对应的名称 -->
+		<result column="function_method" property="functionMethod" />	<!-- 功能对应的方法 -->
+	</resultMap>
+	
+	<!-- 新增功能开始 -->
+	<insert id="saveEntity" parameterType="com.mingsoft.bbs.entity.FunctionEntity">
+		insert into mbbs_function 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="functionAppId != null">function_app_id,</if>
+			<if test="functionTitle != null">function_title,</if>
+			<if test="functionMethod != null">function_method,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="functionAppId != null">#{functionAppId},</if>
+			<if test="functionTitle != null">#{functionTitle},</if>
+			<if test="functionMethod != null">#{functionMethod},</if>
+		</trim>
+	</insert>
+
+	<!--根据应用id获取功能列表开始-->
+	<select id="queryByAppId" resultMap="resultMap">
+		select * from mbbs_function
+		<where>
+			 function_app_id=#{appId}
+		</where>
+		order by function_id desc
+	</select>
+	<!-- 根据应用id获取功能列表结束 -->
+	
+	<!--获取功能实体信息开始  -->
+	<select id="getEntity" resultMap="resultMap">
+		select * from mbbs_function
+		where function_id=#{functionId}
+	</select>
+	<!-- 获取功能实体信息结束 -->
+	
+	<!-- 删除功能开始 -->
+	<delete id="deleteEntity" parameterType="int"> 
+		DELETE  FROM mbbs_function
+		where function_id=#{functionId}
+	</delete>
+	
+	<!-- 更新功能开始 -->
+	<update id="updateEntity" parameterType="com.mingsoft.bbs.entity.FunctionEntity">
+		update mbbs_function
+		<set>
+			<if test="functionTitle != null">function_title=#{functionTitle},</if>
+			<if test="functionMethod != null">function_method=#{functionMethod},</if>
+		</set>
+		where function_id=#{functionId}
+	</update>
+	
+	<!-- 根据basicID删除开始-->
+	<delete id="delete"  parameterType="List">
+		delete  from mbbs_function
+		<where>
+			 function_app_id= #{appId}
+			and function_id  in <foreach collection="functionIds" item="item" index="index" 
+			open="(" separator="," close=")">#{item}</foreach>
+		</where>
+	</delete>
+	<!-- 根据basicID删除结束 -->
+	
+	<!--根据应用id和功能的方法名查询实体开始  -->
+	<select id="getByFunctionMethod" resultMap="resultMap">
+		select * from mbbs_function
+		where function_app_id= #{appId} and function_method =#{functionMethod}
+	</select>
+	<!-- 根据应用id和功能的方法名查询实体结束 -->
+	
+	<!--根据组id和版主id查询功能列表开始  -->
+	<select id="queryByGroupIdAndModeratorTypeId" resultMap="resultMap">
+		SELECT <include refid="function"/>  FROM
+		mbbs_group_function
+		LEFT JOIN mbbs_function ON function_id = gf_function_id
+		WHERE 
+			(gf_group_id=#{groupId} and gf_forum_Id=#{forumId})  or (gf_group_id=#{moderatorTypeId} and gf_forum_Id=0) 
+			and  function_app_id=#{appId}
+		GROUP BY function_id
+	</select>
+	<!-- 根据组id和版主id查询功能列表结束 -->
+	
+</mapper>	

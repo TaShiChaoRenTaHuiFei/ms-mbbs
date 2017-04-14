@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <title>{ms:global.name/}-社区官方论坛</title>
+  {ms:include filename=header.htm/}
+  {ms:include filename=mbbs/header.htm/}
+</head>
+<style>
+    .nav .nav_category_list .nav_list_item .nav_category_children {
+   right: 192px;
+ }
+ .nav .nav_category_list .nav_list_item .nav_category_children .line {
+   height: 49px;
+   top: 0px;
+   left: 266px;
+ }
+ /*自动换行*/
+ .autoWrap{
+  word-break: break-word;
+}
+.nav .allthem{
+ border-left:3px solid  #0098FE;
+ padding-left:28px;
+}
+.nav .allthem a{
+  color: #0098FE;
+}
+</style>
+<!-- 幻灯区 -->
+<script id="slide_show" type="text/x-jquery-tmpl">
+  <li data-background="${articleThumbnails}">
+    <a target="_blank" ></a>
+  </li>
+</script>
+<body>
+  {ms:include filename=head.htm/}
+  <div class="container_wrap wrap_990 clearfix">
+    {ms:include filename=mbbs/left.htm/}
+    <div class="contain_right clearfix">
+      <div class="theme">
+        <div class="theme_con">
+          <div class="theme_nav">
+           <a href="{ms:global.host/}/mbbs/main.do" class="theme_nav_list theme_nav_listOther"  data-type-id="">全部帖子</a> 
+           <a class="btn theme_nav_btn btn-primary">发表新主题</a>
+         </div>
+         <div class="theme_list_noData clearfix">该主题暂无帖子</div>
+         <form class="subject_check">
+           <input type="hidden" name="categoryId" value="{ms:field.typeid/}"/>
+           <ul class="theme_con_index themelistcon clearfix ">
+            {ms:arclist size=30 ispaging=true}
+            <li class="theme_list clearfix">
+              <div class="theme_list_con">
+                <div class="theme_list_img"> 
+                  <a href="[field.link/]" class="headportrait" id="icon[field.id/]"  target="_blank"> 
+                   <img class="user_head" src="[field.people.icon/]">
+                 </a> 
+               </div>
+               <span class="title">
+                <a href="[field.link/]" class="title_name " id="a[field.id/]" target="_blank" >[field.title/] </a>
+                <div class="subjectType"></div>
+              </span>       
+              <a href="[field.link/]" class="user_name" target="_blank">[field.people.name/]</a>
+              <span class="vipnum vipnum_1"></span> 
+              <span class="time txt">发布时间：  [field.date fmt=yyyy年MM月dd日 HH:mm:ss/] </span>  
+              <script type="text/javascript">
+                $(function(){
+                                    //帖子属性
+                           var subjectType ="[field.subjecttype/]";
+                           var html='';
+                                    //用“,”分割帖子属性
+                                    var subjectTypes = new Array(); //定义一数组 
+                                    subjectTypes=subjectType.split(","); //字符分割 
+                                    //循环数组,添加帖子属性
+                                    for(var i=0;i<subjectTypes.length ;i++){
+                                        if(subjectTypes[i] != 0&&subjectTypes[i] !="null"){
+                                            //帖子属性页面显示的效果,必须为后台添加的帖子属性id命名的图片名
+                             $("#a[field.id/]").next(".subjectType").append("<img src='{ms:globalskin.url/}/mbbs/images/"+subjectTypes[i]+".gif'> ");
+                           }
+                         }
+                                    //用户头像
+                           var icon = "[field.people.icon/]";
+                           if(icon == "<!--未找到该标签内容-->"){
+                            $("#icon[field.id/]").html("<img class='user_head' src='http://static.ming-soft.com/global/images/msheader.png'> ");
+                          }
+                        });
+                      </script>
+                      <div class="auth_msg clearfix"> 
+                            <!--<a href="[field.typelink/]" class="time txt"> 发布于&nbsp; [field.typetitle/]</a> 
+                            <span class="comefrom txt">·最后评论时间&nbsp;[field.date.comment.last fmt=yyyy-MM-dd HH:mm:ss/]</span>  -->
+                            <span class="numb msg"><i></i>评论： [field.total.comment/]</span> 
+                            <span class="numb view"><i></i>点击： [field.hit/]</span>
+                         </div>
+                       </div>
+                     </li>        
+                     {/ms:arclist}
+                   </ul>
+                 </form>       
+                 <div class="base_widget_paging">
+                   <div class="paging_widget_2">
+                    <ul>
+                     <li class="next"> <a href="{ms:page.pre/}">&lt; 上一页</a> </li>
+                     <li class="next"> <a href="{ms:page.next/}">下一页 &gt;</a> </li>
+                     <li class="next"><span class="ui-paging-bold">{ms:page.cur/}/{ms:page.total/}</span>页</li>
+                     <li class="next">
+                      <span class="ui-paging-info" style="color: #8c8c8c;">到第<input name="jump" type="text" style="margin: 0 5px; width:45px;height: 20px; line-height: 18px;text-align: center;">页</span>
+                    </li>
+                    <li class="next" id="jump" data-page-count="{ms:page.total/}"><a hred="#" class="btn_sure">确定</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>          
+            </div>
+          </div>
+        </div>       
+      </div> 
+      {ms:include filename=footer.htm/}
+      <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "//hm.baidu.com/hm.js?c7dd60319cfb58871ce21c1221b9bdc3";
+          var s = document.getElementsByTagName("script")[0]; 
+          s.parentNode.insertBefore(hm, s);
+        })();
+      </script>
+      <form id="searchForm"  action="/mbbs/14/searchSubject.do">
+        <input name="subjectTypeId"  type="hidden"  value="">
+        <input name="pageNo"  type="hidden"  value="1">
+      </form>
+    </body>
+    </html>
+    <script type="text/javascript">
+     var CurrPage = {ms:page.cur/};
+     $(function(){             
+       if($.trim($(".theme_con_index").html())=="<!--未找到该标签内容-->"){
+        $(".theme_con .theme_list_noData").show();
+        $(".paging_widget_2").hide();
+      }
+      $(".theme_nav a:first").css("background","rgb(243, 243, 243)");
+    });
+  </script>

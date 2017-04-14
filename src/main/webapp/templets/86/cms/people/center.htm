@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<title>铭飞MS平台官方网站－会员中心</title>
+    {ms:include filename=header.htm/}
+    {ms:include filename=people/header.htm/}
+</head>
+
+<body>
+	{ms:include filename=head.htm/}
+
+	<div class="user_center">
+		<!--公用左边菜单部分开始-->
+		{ms:include filename=people/menu.htm/}
+		<!--公用左边菜单部分结束-->
+
+		<div class="user_centent">
+			<!--个人中心内容部分头部固定数据-->
+			{ms:include filename=people/data.htm/}
+
+			<!--更新提示-->
+			<div class="user_cententbody">
+
+				<div class="alert alert-info listNone hide-default" role="alert">
+                    <p>铭飞MS平台给您提供崭新的开源分享模式，相信开源的力量，快快分享一个。<a class="label label-primary" href="{ms:global.host/}/people/share.do">立即分享</a></p>
+                    <p>温馨提示：在我们向别人索取的同时，我们应该也要懂得分享，平台才会更美好</p>
+                </div>
+
+				<div class="share_list hide-default">
+					<!--我的发布-->
+					<div class="user_cententbodynav">我分享的模板</div>
+
+					<script type="text/x-jquery-tmpl" id="skinList">
+					{{if upgraderVersionType==2}}
+	                <div class="thumbnail myshare_template">
+	                    <div class="ms_templateTitle">${upgraderVersionName}</div>
+	                    <div class="ms_templatePic">
+	                        <img class="lazy" src="${upgraderVersionImg}" onerror='this.src="{ms:globalskin.url/}/images/templatedeft.jpg"'/>
+	                       	{{if upgraderVersionProgress==0}}
+	                        	<div class="tipMsg">申请审核中</div>
+							{{else upgraderVersionProgress==1}}
+	                        	<a class="tipMsg" data-container="body" data-toggle="popover" data-placement="bottom" data-content="${upgraderVersionKey}" style="width: 250px;"><i
+	                class="icon iconfont icon-logo">&#xe724; </i>申请通过，点击查看mstore-key</a>
+							{{else upgraderVersionProgress==10}}
+	                            <a tabindex="0" class="tipMsg" data-trigger="focus" data-toggle="popover" data-placement="bottom"  data-content="企业模板建议免费发布"><i
+	                class="icon iconfont icon-logo">&#xe724; </i>申请失败</a>
+							{{else upgraderVersionProgress==2}}
+	                        	<a class="tipMsg" data-container="body" data-toggle="popover" data-placement="bottom" data-content="${upgraderVersionKey}" style="width: 250px;"><i
+	                class="icon iconfont icon-logo">&#xe724; </i>开发中...点击查看mstore-key</a>
+							{{else upgraderVersionProgress==3}}
+	                        	<div class="tipMsg">发布审核中</div>
+							{{else upgraderVersionProgress==30}}
+	                            <a tabindex="0" class="tipMsg" data-trigger="focus" data-toggle="popover" data-placement="bottom"  data-content="模板文件结构不符合要求，请按照SDK模板进行开发"><i
+	                class="icon iconfont icon-logo">&#xe724; </i>发布审核失败</a>
+							{{else upgraderVersionProgress==4}}
+	                        	<div class="tipMsg">发布成功</div>
+							{{/if}} 
+	                    </div>
+	                    <div class="priceAndNum">
+	                        <span class="thumbnail_price">{{if upgraderVersionPrice==0}}免费分享{{else}}赞助费：￥${upgraderVersionPrice}{{/if}}</span>
+	                        <!--span class="thumbnail_num">当前用户：0</span-->
+	                    </div>
+		   					{{if upgraderVersionProgress==0}}
+	    						<a class="btn btn-default" style="width:100%;" disabled="disabled"> 请耐心等待审核 </a>
+	    					{{else upgraderVersionProgress==1}}
+	    						<a class="btn btn-default down_sdk" data-id="${upgraderVersionId}" style="width:100%;"> 下载SDK </a>
+	    					{{else upgraderVersionProgress==10}}
+	    						<a class="btn btn-default" style="width:100%;"> 7天后会自动删除 </a>
+	    					{{else upgraderVersionProgress==2}}
+	    						<a class="btn btn-success" href="{ms:global.host/}/people/shareApply.do?id=${upgraderVersionId}" style="width:100%;" >发布</a>
+	    					{{else upgraderVersionProgress==3}}
+	    						<a class="btn btn-default" style="width:100%;" disabled="disabled"> 请耐心等待审核 </a>
+							{{else upgraderVersionProgress==30}}
+	    						<a class="btn btn-default" style="width:100%;"> 删除 </a>
+	    					{{else upgraderVersionProgress==4}}
+	    						<a href="{ms:global.host/}/people/shareUpgrader.do?id=${upgraderVersionId}" class="btn btn-info" style="width:100%;">更新版本</a>
+	    					{{/if}}
+	                </div>
+					{{/if}}
+					</script>
+					<div class="skin_list"></div>
+
+					<div class="thumbnail myshare_template" style="margin-right: 0px;">
+						<!--<div class="myshare_price">价值源自于分享</div>-->
+						<div class="myshare_new">
+							<a href="{ms:global.host/}/people/share.do" data-toggle="tooltip" data-placement="top" title="立即分享">+</a>
+						</div>
+					</div>
+					
+					<div class="user_cententbodynav">我分享的插件</div>
+					<script type="text/x-jquery-tmpl" id="plugsList">
+					{{if upgraderVersionType==1}}
+	                <div class="thumbnail myshare_thumbnail">
+	                    <div class="ms_plugPic">
+	                        <img class="lazy" src="${upgraderVersionImg}" onerror='this.src="{ms:globalskin.url/}/images/plugdeft.jpg"'>
+							{{if upgraderVersionProgress==0}}
+	                        	<div class="tipMsg">申请审核中</div>
+							{{else upgraderVersionProgress==1}}
+	                        	<div class="tipMsg">申请通过</div>
+							{{else upgraderVersionProgress==10}}
+	                            <a tabindex="0" class="tipMsg" data-trigger="focus" data-toggle="popover" data-placement="bottom"  data-content="企业模板建议免费发布"><i
+	                class="icon iconfont icon-logo">&#xe724; </i>申请失败</a>
+							{{else upgraderVersionProgress==2}}
+	                        	<div class="tipMsg">开发中</div>
+							{{else upgraderVersionProgress==3}}
+	                        	<div class="tipMsg">发布审核中</div>
+							{{else upgraderVersionProgress==30}}
+	                            <a tabindex="0" class="tipMsg" data-trigger="focus" data-toggle="popover" data-placement="bottom"  data-content="模板文件结构不符合要求，请按照SDK模板进行开发"><i
+	                class="icon iconfont icon-logo">&#xe724; </i>发布审核失败</a>
+							{{else upgraderVersionProgress==4}}
+	                        	<div class="tipMsg">发布成功</div>
+							{{/if}}
+	                    </div>
+	                    <div class="caption">
+	                        <div class="ms_plugTitle">${upgraderVersionName}</div>
+	                        <div class="ms_plugDescription">${upgraderVersionDescription}</div>
+	                        
+	                        
+	                        <div class="priceAndNum">
+	                            <span class="thumbnail_price">{{if upgraderVersionPrice==0}}免费分享{{else}}赞助费：￥${upgraderVersionPrice}{{/if}}</span>
+	                            <!--span class="thumbnail_num">当前用户：0</span-->
+	                        </div>
+	    					{{if upgraderVersionProgress==0}}
+	    						<button type="button" class="btn btn-default" style="width:100%;" disabled="disabled"> 请耐心等待审核 </button>
+	    					{{else upgraderVersionProgress==1}}
+	    						<button type="button" class="btn btn-default" style="width:100%;"> 下载SDK </button>
+	    					{{else upgraderVersionProgress==10}}
+	    						<button type="button" class="btn btn-default" style="width:100%;"> 删除 </button>
+	    					{{else upgraderVersionProgress==2}}
+	    						<button type="button" class="btn btn-success" style="width:100%;"> <a herf="{ms:global.host/}/people/shareApply.do">发布</a> </button>
+	    					{{else upgraderVersionProgress==3}}
+	    						<button type="button" class="btn btn-default" style="width:100%;" disabled="disabled"> 请耐心等待审核 </button>
+							{{else upgraderVersionProgress==30}}
+	    						<button type="button" class="btn btn-default" style="width:100%;"> 删除 </button>
+	    					{{else upgraderVersionProgress==4}}
+	    						<button type="button" class="btn btn-info" style="width:100%;"> <a href="{ms:global.host/}/people/shareUpgrader.do">更新版本</a> </button>
+	    					{{/if}}
+
+	                    </div>
+	                </div>
+					{{/if}}
+					</script>
+
+					<div class="plugs_list"></div>
+
+					<div class="thumbnail myshare_thumbnail" style="margin-right: 0px;">
+						<!--<div class="myshare_price">价值源自于分享</div>-->
+						<div class="myshare_new">
+							<a href="{ms:global.host/}/people/share.do" data-toggle="tooltip" data-placement="top" title="立即分享">+</a>
+						</div>
+					</div>
+
+				</div>
+				
+
+
+			</div>
+
+		</div>
+	</div>
+
+	{ms:include filename=footer.htm/}
+</html>
+<form id="upgraderVersionForm" method="post">
+	<input type="hidden" name="" />
+</form>
+<script type="text/javascript">
+	$(function() {
+		ms.load([ "ms", "ms.upgrader","ms.people"], function(ms, upgrader,people) {
+			upgrader.people.list(function(data) {
+				if(data.length > 0){
+					$("#plugsList").tmpl(data).appendTo(".plugs_list");
+					$("#skinList").tmpl(data).appendTo(".skin_list");
+					$(".share_list").fadeIn();
+
+					/*提示信息弹出框依赖*/
+					$('[data-toggle="popover"]').popover();
+				}else{
+					$(".listNone").fadeIn();
+				}
+			});
+		});
+		
+		$(".skin_list").delegate(".down_sdk","click",function() {
+
+			$("#upgraderVersionForm").attr("action","{ms:global.host/}/people/upgrader/version/"+$(this).data("id")+"/sdk.do");
+			$("#upgraderVersionForm").submit();
+			$(this).hide();
+			var data_id = $(this).attr("data-id")
+			$(this).after('<a class="btn btn-success" href="{ms:global.host/}/people/shareApply.do?id='+data_id+'" style="width:100%;" >发布</a>')
+			
+		});
+	})
+</script>

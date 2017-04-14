@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>{ms:global.name/}-{ms:field.typetitle/}</title>
+    <link href="{ms:globalskin.url/}/css/docs.css" rel="stylesheet">
+    <link href="{ms:globalskin.url/}/css/prettify.css" rel="stylesheet">
+    {ms:include filename=header.htm/}
+    
+    <!--旧版文档-->
+    <link rel="stylesheet" type="text/css" href="{ms:global.host/}/ueditor1_3_6/third-party/SyntaxHighlighter/shCoreDefault.css">
+    <!--代码高亮-->
+    <script src="{ms:global.host/}/ueditor1_3_6/third-party/SyntaxHighlighter/shCore.js"></script>
+    <script> 
+    SyntaxHighlighter.all() //执行代码高亮 </script>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="{ms:globalskin.url/}/js/html5shiv.min.js">
+    
+    <![endif]-->
+    </script>
+    <style type="text/css">
+    .subhead h1 {
+        font-size: 32px;
+        font-weight: normal;
+        line-height: 1;
+        color: #fff;
+    }
+    .jumbotron p{
+      font-size: 20px;
+        color: #fff;
+    }
+
+    h1,.h1,h2,.h2,h3,.h3 {
+        margin-top: 30px;
+    }
+
+    .page-header {
+        margin-top: 0px;
+    }
+
+    table {
+        border: 1px solid black;
+        width: 100%;
+    }
+
+    table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        font-family: "source-code-pro", Consolas, Microsoft Yahei, monospace !important;
+    }
+
+    .padding0 {
+        padding-left: 0px;
+        padding-right: 0px
+    }
+
+    .span9 {
+        font-family: "source-code-pro", Consolas, Microsoft Yahei, monospace !important;
+    }
+
+    .nav-list>.active>a,.nav-list>.active>a:hover,.nav-list>.active>a:focus {
+        color: #fff;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+        background-color: #08c;
+    }
+
+    .footer {
+        background: #4A4849;
+    }
+
+    section {
+        padding-top: 15px;
+    }
+    .container{
+      width: 1170px;
+      margin: 0px auto;
+    }
+    .affix{
+      position: fixed;
+      _position: relative;
+    }
+    p {
+        margin: 6px;
+    }
+    .syntaxhighlighter .gutter{padding-top:0px!important}
+    </style>
+</head>
+
+<body data-spy="scroll" data-target=".bs-docs-sidebar">
+    {ms:include filename=head.htm/}
+    <!-- Subhead
+    ================================================== -->
+    <header class="jumbotron subhead" id="overview" style="min-width:1220px;">
+        <div class="container">
+            {ms:arclist flag=c  size=1}
+            <h1>[field.title/]</h1>
+            <p class="lead">[field.descrip/]</p>
+            {/ms:arclist}
+        </div>
+    </header>
+    <div class="container padding0">
+        <!-- Docs nav
+        ================================================== -->
+        <div class="row">
+            <div class="span3 bs-docs-sidebar">
+                <ul class="nav nav-list bs-docs-sidenav">
+                    {ms:arclist orderby=sort noflag=c}
+                    <li><a href="#cmsindex[field.id/]"><i class="icon-chevron-right"></i>[field.title/]</a></li>
+                    {/ms:arclist}
+                </ul>
+            </div>
+            <div class="span9">
+                {ms:arclist orderby=sort noflag=c}
+                <section id="cmsindex[field.id/]">
+                    <div class="page-header">
+                        <h1 style="font-size:24px;">[field.index/]. [field.title/]</h1>
+                    </div>
+                </section>
+                
+                {ms:noparser}
+                [field.content/] 
+                {/ms:noparser}
+                {/ms:arclist}
+            </div>
+        </div>
+    </div>
+    <!-- Footer
+    ================================================== -->
+    {ms:include filename=footer.htm/}
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{ms:globalskin.url/}/js/holder.js"></script>
+    <script src="{ms:globalskin.url/}/js/prettify.js"></script>
+    <script src="{ms:globalskin.url/}/js/application.js"></script>
+</body>
+
+</html>

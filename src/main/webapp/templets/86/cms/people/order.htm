@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>{ms:global.name/}-我的下载</title>
+    {ms:include filename=header.htm/}
+    {ms:include filename=people/header.htm/}
+    
+</head>
+
+<body>
+    {ms:include filename=head.htm/}
+    
+    <div class="user_center">
+        <!--公用左边菜单部分开始-->
+        {ms:include filename=people/menu.htm/}
+        <!--公用左边菜单部分结束-->
+        
+        <div class="user_centent">
+            <!--个人中心内容部分头部固定数据-->
+            {ms:include filename=people/data.htm/}
+            
+
+            <!--更新提示-->
+            <div class="user_cententbody">
+                <!--我的收益订单-->
+                <div class="user_cententbodynav">我的收益订单</div>
+                <div class="alert alert-info listNone hide-default" role="alert">
+                    <p>价值源自分享，分享优质模版与插件会获得爱好者更多的RMB赞助。<a class="label label-primary" href="{ms:global.host/}/people/share.do">立即分享</a></p>
+                    <p>温馨提示：相信这个世界是美好的！别让好代码在您的硬盘里面睡觉，勇敢的分享出来吧。</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    {ms:include filename=footer.htm/}
+</html>
+<script>
+    $(function(){
+        $(".listNone").fadeIn();
+    })
+</script>

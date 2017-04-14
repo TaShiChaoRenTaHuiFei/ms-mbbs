@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xml:lang="zh-CN">
+<head>
+    <title>{ms:field.title/} - 铭飞官方MS论坛</title>
+    {ms:include filename=header.htm/}
+    {ms:include filename=mbbs/header.htm/}
+
+<script src="http://cdn.mingsoft.net/plugins/plupload/plupload.full.min.js"></script>
+<!-- 文本编辑器 -->
+<script type="text/javascript" charset="utf-8" src="{ms:global.host/}/ueditor_1_4_3_1/ueditor.parse.js"></script>
+<script type="text/javascript" charset="utf-8" src="{ms:global.host/}/ueditor_1_4_3_1/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="{ms:global.host/}/ueditor_1_4_3_1/ueditor.all.js"></script>
+<script type="text/javascript" charset="utf-8" src="{ms:global.host/}/ueditor_1_4_3_1/lang/zh-cn/zh-cn.js"></script>
+    <link rel="stylesheet" type="text/css" href="{ms:globalskin.url/}/mbbs/css/invitation.css"> 
+</head>
+<!--  版主添加帖子属性列表 -->
+<script id="subjectTypeList" type="text/x-jquery-tmpl">
+    <li class="link_banzhu_manage saveSubjectType" style="text-align: center;" data-page-basicId="${basicId.value}" data-page-categoryId="${categoryId}" >
+        <a>${categoryTitle}</a>
+    </li>
+</script>
+<!--  版主取消帖子属性列表-->
+<script id="subjectTypeDelete" type="text/x-jquery-tmpl">
+    <li class="link_banzhu_manage deleteSubjectType" style="text-indent: 20px;"  data-page-basicId="${basicId.value}" data-page-categoryId="${categoryId}">
+        <a>取消${categoryTitle}</a>
+    </li>
+</script>
+<!-- 板块列表 -->
+<script id="categoryParentTmp" type="text/x-jquery-tmpl">  
+    <a href="javascript:void(0);" data-id="${categoryId}" parent-id="${categoryCategoryId}">${categoryTitle}</a>     
+</script>
+<body>
+    {ms:include filename=head.htm/}
+    <div class="main">
+        <div class="container_wrap wrap_990 clearfix">
+            {ms:include filename=mbbs/left.htm/}
+            <div class="contain_right clearfix">
+                <div class="filtrate invitation">
+                    <div class="invitation_con">
+                        <h1>{ms:field.title/}&nbsp;<span id="sub{ms:field.id/}"></span></h1>
+                        <div class="platewrap subject_category">
+                            <a href="{ms:field.typelink/}" class="link">{ms:field.typetitle/}</a>               
+                        </div>
+                        <div class="user_edit" style="display:none;">
+                            <a class="link_banzhu user_button">修改帖子</a>
+                        </div>
+                        <input name="basicId"  value="{ms:field.id/}" type="hidden"/>  
+                        <input name="peopleId"  value="{ms:field.author.id/}" type="hidden"/>  
+                        <form class="subject_check">
+                            <input type="checkbox" checked="false"  value="{ms:field.id/}"  name="ids" style="display:none" />
+                        </form>
+                        <p class="txt"> <span>楼主： </span> 
+                            <span class="name"> {ms:field.author/} </span>
+                            <!--<a href="#" order-by="1" class="publish_address"></a> -->
+                            <span class="time"> {ms:field.date fmt=yyyy-MM-dd HH:mm:ss/}</span> 
+                            <span class="f_r"><i class="see"></i>{ms:field.hit/}</span> 
+                            <span class="f_r"><i class="msg"></i>{ms:field.total.comment/}</span> 
+                        </p>
+                        <div class="invitation_content">
+                            {ms:field.content/}
+                        </div>                      
+                    </div>
+                </div>
+                <div class="reply_area">
+                    <div class="reply_area_con clearfix">
+                        <div class="reply_area_img">
+                            <a  class="headportrait" target="_blank">
+                                <img id="pc_peopleicon" class='user_head' src=''>
+                            </a>
+                        </div>                                                         
+                        <div class="area_con">
+                            <!-- 编辑器 -->
+                            <!-- form表单序列化 -->
+                            <form class="commentContent">
+                                <input type="hidden" name="commentBasicId" id="basicId" value="{ms:field.id/}" />
+                                <input type="hidden" name="mail_code" value="saveComment" />
+                                <script id="editor" type="text/plain" name="commentContent" style="width:100%;height:120px;margin-top: 7px; position: relative;z-index: 0"></script>
+                                <script type="text/javascript">
+                                     //实例化编辑器
+                                     //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+                                     var URL = window.UEDITOR_HOME_URL || "/ueditor_1_4_3_1/";
+                                     var ue = UE.getEditor('editor', {
+                                  // 服务器统一请求接口路径
+                                  serverUrl: URL + "jsp/msController.jsp?jsonConfig={imagePathFormat: '/upload/editor/86/{time}{rand:6}'}", 
+                                  toolbars: [
+                                  ['bold', 'fontsize', 'blockquote', 'forecolor', 'emotion', 'justifyleft', 'justifycenter', 'justifyright', 'link', 'unlink', 'simpleupload', 'insertimage']
+                                  ],
+                                  autoHeightEnabled: true,
+                                  autoFloatEnabled: true,
+                                  scaleEnabled: true,
+                                  maximumWords: 5000,
+                                  savePath: [ '../../upload/editor/86/']
+                              });
+                          </script>
+                          <!-- 编辑器 end-->
+                          <div style="margin-top:20px;">
+                            
+                            <button type="button" class="reply_btn reply_post saveComment btn btn-info" id="J_reply" >回复</button>
+                            <div class="comment_verifycode">
+                                <span>验证码:</span>
+                                <input type="text" class="J_code" name="rand_code" maxlength="4"/>
+                                <img id="commentCode"><span><a class="commentCode" style="cursor:pointer;">看不清？换一张</a></span><div class=" imgErr"></div>
+                                <span class="resulticon"></span>
+                            </div>
+                            <!--错误提示-->
+                            <div class="input_bottom_err" style="display:none">
+                                <div class="icon_err"></div>
+                                <div class="text_err"></div>
+                            </div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+          <div class="reply" id="comment_top">
+            <div class="reply_con">
+                <div class="reply_title clearfix">
+                    <h3>全部回帖</h3>
+                    <span class="replay_num">{ms:field.total.comment/}</span>条回复
+                    <div class="nonstop"></div>
+                </div>
+                <div class="theme_list_noData clearfix">该帖子暂无评论！</div>                      
+                <input type="hidden" name="basicId" value="{ms:field.id/}" />
+                <form class="comment_check">
+                    <input type="hidden" name="mail_code" value="saveComment" />
+                    <input type="hidden" name="commentBasicId" value="{ms:field.id/}" />
+                    <div class="container-all _moreCheck" style="display:none;">
+                        <input type="checkbox" name="allCheck">
+                        <span>全选</span> | <span class="container-del delete_comment">删除 </span>
+                    </div>
+                    <ul class="reply_list clearfix">                                    
+                        {ms:comlist size=20 type=top/}
+                        <li class="reply_list_item clearfix">
+                            <div class="detail_ma">
+                                <input type="checkbox" value="[field.id/]" name="commentCommentId" />
+                            </div>
+                            <div class="reply_list_img">
+                                <a  class="headportrait" target="_blank" id="icon[field.id/]">
+                                    <img class='user_head' src="[field.people.icon/]">
+                                </a>
+                                <span class="reply_list_float shafa">[field.index/]F</span>
+                            </div>
+                            <script type="text/javascript">
+                                $(function(){
+                                    $(".user_head").each(function(index){ 
+                                        var icon =$(this).attr("src");
+                                        if(icon == "<!--未找到该标签内容-->" || icon == ""){
+                                            $(this).attr("src","http://cdn.mingsoft.net/global/images/msheader.png");
+                                        }
+                                    }); 
+                                });
+                            </script>
+                            <div class="reply_list_con">
+                                <div class="auth_msg clearfix">
+                                    <a class="auth_name" target="_blank">[field.people.name/]</a>
+                                </div>
+                                <div class="reply_txt"> [field.content/]</div>
+
+                                <div class="reply_talk">
+                                    <span class="frameem"></span><i class="triangle"></i>
+                                    <ul>
+                                        {ms:chidlcomlist/}
+                                        <li data-value="[field.id/]">
+                                            <div><div class="commentchildlist"><input type="checkbox"value="[field.id/]" name="commentid" style="margin-right: 5px;"></div><span class="user_name">[field.people.name/]</span>说：</div>
+                                            <!--i class="vip_icon vip_icon_s6"></i-->
+                                            <div>[field.content/]</div>
+                                            <!--span class="time">09-19 19:51:49</span-->
+                                        </li>
+                                        {/ms:chidlcomlist}
+                                    </ul>
+                                </div>
+                                <p class="replay_bu">
+                                    <span class="replay_btn">[field.date.comment fmt=yyyy年MM月dd日 HH:mm/] | 
+                                        <a class="replies_comment_show replies_comment_show[field.id/]" data-comment-id="[field.id/]" data-comment-click="false">回复</a>
+                                    </p>
+                                </div>
+                                <div class="replies_txt hide-default replies_txt[field.id/]">
+                                    <!--二级回复-->
+                                </div>
+                            </li>
+                            {/ms:comlist}
+                        </ul>
+                    </form>
+                    <!--分页-->
+                    {ms:include filename=mbbs/page.htm/}
+                </div>
+            </div>
+            <div class="sidebar">
+                <a href="#editor" class="sidebar_btn sidebar_msg">回复</a>
+                <a href="{ms:global.host/}/mbbs/{ms:field.typeid/}/post.do" class="sidebar_btn sidebar_postmsg">发贴</a>
+                <input type="hidden" name="categoryId" value="{ms:field.typeid/}" />
+            </div>
+        </div>
+        <span class="return" style="display: none; top: 618px;">返回</span> 
+    </div>
+</div>
+{ms:include filename=footer.htm/}
+</body>
+<script type="text/x-jquery-tmpl" id="replies_txt">
+    <textarea name="commentContent" class="commentChildContent"></textarea>
+    <input type="hidden" name="commentCommentId" value="" />
+    <div class="commentCommentId-submit">
+        <input type="text" class="J_code" name="rand_code" maxlength="4"/>
+        <img id="commentCodeChild">
+        <button type="button" class="replies_comment btn btn-info" style="width: 80px;">回复</button>
+    </div>
+</script>
+</html>
+<script type="text/javascript">
+    $(function() {
+        $(".reply_talk").each(function(index) {
+            var obj = $(this).find("ul");
+            if (obj.find("li").length <= 0) {
+                $(this).hide();
+            } else {
+                obj.find("li:last").css("border-bottom", "none");
+            }
+        });
+
+        if ($.trim($(".reply_list").html()) == "") {
+            $(".theme_list_noData").show();
+            $(".paging_widget_2").hide();
+        }
+
+
+
+        if($(".invitation").attr("data-id") == "4944" || $(".invitation").attr("data-id") == "8813" || $(".invitation").attr("data-id") == "8814" || $(".invitation").attr("data-id") == "8815" || $(".invitation").attr("data-id") == "8816"){
+            $(".invitation").css("background","url({ms:globalskin.url/}/mbbs/mbbs/images/guanfangback.png) no-repeat #fff");
+        }
+    });
+</script>
+<script>
+    $(function(){
+        ms.load(["ms","ms.mbbs","ms.people"],function(ms,mbbs,people) {
+            ms.code("commentCode");
+            $("#commentCode,.commentCode").click(function(){
+                ms.code("commentCode");
+            });
+            /*二级回复事件*/
+            $(".reply_con").delegate(".replies_comment_show","click",function(){
+                $(".replies_txt").slideUp();
+                $(".replies_txt").html("");
+                $(".replies_comment_show").text("回复");
+                var target = ".replies_txt"+$(this).attr("data-comment-id");
+                if($(this).attr("data-comment-click") == "true"){
+                    $(target).html("");
+                    $(".replies_comment_show").attr("data-comment-click","flase");
+                    $(this).text("回复");
+                }else{
+                    var json;
+                    $("#replies_txt").tmpl(json).appendTo(target);
+                    ms.code("commentCodeChild");
+                    $("input[name=commentCommentId]").val($(this).attr("data-comment-id"));
+                    $("#commentCodeChild").click(function(){
+                        ms.code("commentCodeChild");
+                    });
+                    $(this).attr("data-comment-click","true");
+                    $(".replies_txt").slideDown();
+                    $(this).text("收起回复");
+                }
+            });
+
+            /*发布评论*/
+            $(".saveComment").click(function(){
+                //确认是否登录，没有登录则提醒登录
+                var code_val = $(".J_code").val();
+                people.checkLoginStatus(function(json){
+                    if(json.result){
+                        $(".saveComment").attr("disabled", true);
+                        $(".saveComment").text("回复中");
+                        ue.ready(function(editor) {
+                            if(ue.getContent() == ""){
+                                ms.alert("评论不能为空");
+                                saveCommentOff();
+                                return;
+                            };
+                        });
+                        if($("input[name=rand_code]").val() == ""){
+                            ms.alert("验证码不能为空");
+                            saveCommentOff();
+                            return;
+                        }
+                        mbbs.people.mbbs.comment.save($(".commentContent").serialize(),function(json){
+                            if(json.result){
+                                location.reload();
+                            }else{
+                                ms.alert("验证码错误");
+                                saveCommentOff();
+                                ms.code("commentCode");
+                                return;
+                            }
+                        });
+                    }else{
+                        ms.alert("请登录");
+                    }
+                });
+            });
+
+            //点击我要回复发布评论
+            $(".reply_con").delegate(".replies_comment","click",function(){
+                //判断用户是否已经登录
+                people.checkLoginStatus(function(json){
+                    if(json.result){
+                        $(".replies_comment").attr("disabled", true);
+                        $(".replies_comment").text("回复中");
+                        if($(".commentChildContent") == ""){
+                            ms.alert("评论不能为空");
+                            commentOff();
+                            return;
+                        };
+                        if($(".commentCommentId-submit input[name=rand_code]").val() == ""){
+                            ms.alert("验证码不能为空");
+                            commentOff();
+                            return;
+                        }
+                        //贴子回复保存
+                        mbbs.people.mbbs.comment.save($(".comment_check").serialize(),function(json){
+                            if(json.result){
+                                location.reload();
+                            }else{
+                                ms.alert("验证码错误");
+                                commentOff();
+                                ms.code("commentCodeChild");
+                                return;
+                            }
+                        });
+                    }else{
+                        ms.alert("请登录");
+                    }
+                });
+            });
+            //编辑自己发的贴子
+            //判断用户是否已经登录
+            people.checkLoginStatus(function(json){
+                if(json.result){
+                    //获取帖子ID
+                    var basicId = $("input[name='basicId']").val();
+                    //获取版块Id
+                    var categoryId = $("input[name='categoryId']").val();
+                    //获取发帖人id
+                    var peopleId = $("input[name=peopleId]").val();
+                    people.people.user.info(function(json) {
+                        if(peopleId == json.peopleId){
+                            $(".invitation_con .txt").append('<a href="/mbbs/edit.do?basicId='+basicId+'"> 编辑</a>')
+                        }
+                    })
+                }
+            });
+        })
+    });
+    
+    function commentOff(){
+        $(".replies_comment").attr("disabled", false);
+        $(".replies_comment").text("回复");
+    }
+    function saveCommentOff(){
+        $(".saveComment").attr("disabled", false);
+        $(".saveComment").text("回复");
+    }
+</script>

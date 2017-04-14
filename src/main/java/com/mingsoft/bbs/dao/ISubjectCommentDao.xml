@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 评论持久化层XML配置继承ISubjectCommentDao -->
+<mapper namespace="com.mingsoft.bbs.dao.ISubjectCommentDao">
+
+	<!-- 评论表字段 -->
+	<sql id="column_list">
+		COMMENT_ID,COMMENT_COMMENTID,COMMENT_CONTENT,COMMENT_PICTURE,COMMENT_TIME,COMMENT_TYPE,COMMENT_PEOPLEID,COMMENT_POINTS,COMMENT_BASICID,BASIC_TITLE,PEOPLE_NAME
+	</sql>
+
+	<!-- 评论表、Basic表、会员表字段 -->
+	<sql id="all_column_list">
+		c.COMMENT_ID,c.COMMENT_COMMENTID,c.COMMENT_CONTENT,c.COMMENT_PICTURE,c.COMMENT_TIME,c.COMMENT_TYPE,c.COMMENT_PEOPLEID,c.COMMENT_POINTS,c.COMMENT_BASICID,
+		b.BASIC_TITLE,p.PEOPLE_NAME,pu.PU_ICON,pu.PU_NICKNAME,
+	</sql>
+	
+	<!-- 评论表字段与评论实体属性对应，供返回实体信息时使用 -->
+	<resultMap id="resultMap" type="java.util.HashMap">
+		<id column="COMMENT_ID" property="commentId" />
+		<result column="COMMENT_COMMENTID" property="commentCommentId" />
+		<result column="COMMENT_CONTENT" property="commentContent" />
+		<result column="COMMENT_PICTURE" property="commentPicture" />
+		<result column="COMMENT_TIME" property="commentTime" />
+		<result column="COMMENT_TYPE" property="commentType" />
+		<result column="COMMENT_PEOPLEID" property="commentPeopleId" />
+		<result column="COMMENT_POINTS" property="commentPoints" />
+		<result column="COMMENT_BASICID" property="commentBasicId" />
+		<result column="BASIC_TITLE" property="basicTitle" />
+		<result column="PEOPLE_NAME" property="peopleName" />
+		<result column="PU_NICKNAME" property="peopleUserNickName" />
+		<result  column="PU_ICON" property="peopleUserIcon" />
+	</resultMap>
+
+	<resultMap id="resultMapComment" type="net.mingsoft.comment.entity.CommentEntity">
+		<id column="COMMENT_ID" property="commentId" />
+		<result column="COMMENT_COMMENTID" property="commentCommentId" />
+		<result column="COMMENT_CONTENT" property="commentContent" />
+		<result column="COMMENT_PICTURE" property="commentPicture" />
+		<result column="COMMENT_TIME" property="commentTime" />
+		<result column="COMMENT_TYPE" property="commentType" />
+		<result column="COMMENT_PEOPLEID" property="commentPeopleId" />
+		<result column="COMMENT_POINTS" property="commentPoints" />
+		<result column="COMMENT_BASICID" property="commentBasicId" />
+		
+		<association column="PU_ICON" property="commentPeopleUser"
+			javaType="com.mingsoft.people.entity.PeopleUserEntity">
+			<result column="COMMENT_PEOPLEID" property="peopleId" />
+			<result property="peopleUserIcon" column="PU_ICON" />
+			<result property="peopleUserNickName" column="PU_NICKNAME" />
+			<result property="peopleName" column="PEOPLE_NAME" />
+		</association>	
+	</resultMap>
+	
+	
+
+
+	<!-- 根据试图查询评论列表开始 -->
+	<select id="queryByView"  resultMap="resultMapComment">
+		select * from v_subject_comment 
+		<where>
+			<if test="basicId != null">
+				and comment_basicid=#{basicId}
+			</if>
+			<if test="commentCommentId !=null">
+				and COMMENT_COMMENTID=#{commentCommentId}
+			</if>
+			<if test="orderBy != null">
+				order by ${orderBy}
+			</if>
+			<if test="page != null">
+				limit
+				${page.pageNo*page.pageSize},#{page.pageSize}
+			</if>
+		</where>
+	</select>
+
+	<select id="countByView" resultType="int">
+		select count(comment_id) from v_subject_comment
+		<where>
+			<if test="basicId != null">
+				comment_basicid=#{basicId}
+			</if>
+			<if test="commentCommentId !=null">
+				and COMMENT_COMMENTID=#{commentCommentId}
+			</if>
+		</where>
+	</select>
+	<!-- 根据试图查询评论列表结束 -->
+	
+	<!-- 根据试图评论作者id查询评论列表开始 -->
+	<select id="queryByPeopleId"  resultMap="resultMap">
+		select COMMENT_ID,COMMENT_COMMENTID,COMMENT_CONTENT,COMMENT_PICTURE,COMMENT_TIME,COMMENT_TYPE,COMMENT_PEOPLEID,COMMENT_POINTS,COMMENT_BASICID,
+		BASIC_TITLE,PEOPLE_NAME,PU_ICON,PU_NICKNAME from v_subject_comment 
+		<where>
+			<if test="appId != null">
+				and basic_appid=#{appId}
+			</if>
+			<if test="peopleId != null">
+				and comment_peopleId=#{peopleId}
+			</if>
+			<if test="orderBy != null">
+				order by ${orderBy}
+			</if>
+			<if test="order == true">
+				ASC
+			</if>
+			<if test="order == false">
+				DESC
+			</if>
+			<if test="page != null">
+				limit
+				${page.pageNo*page.pageSize},#{page.pageSize}
+			</if>
+		</where>
+	</select>
+
+	<select id="countByPeopleId" resultType="int">
+		select count(*) from v_subject_comment
+		<where>
+			<if test="appId != null">
+				and basic_appid=#{appId}
+			</if>
+			<if test="peopleId != null">
+				and comment_peopleId=#{peopleId}
+			</if>
+		</where>
+	</select>
+	<!-- 根据试图评论作者id查询评论列表结束 -->
+	
+	<!-- 根据basicId查询最新评论时间 -->
+	<select id="getLastPostTime" resultType="java.sql.Timestamp">
+		 select min(COMMENT_TIME) from comment  where COMMENT_BASICID = #{basicId}
+	</select>
+	<!-- 根据basicId查询最新评论时间 -->
+	
+	<!-- 根据commentId删除多条评论 -->
+	<delete id="delete">
+		DELETE  FROM `comment`
+		<where>
+    		COMMENT_ID in <foreach collection="ids" item="item" index="index" 
+			open="(" separator="," close=")">#{item}</foreach>
+			<if test="peopleId &gt; 0">
+				COMMENT_PEOPLEID = #{peopleId}
+			</if>
+		</where>
+		
+	</delete>
+	<!-- 根据commentId删除多条评论 -->
+	
+	<!-- 通过发帖作者id查询最新动态列表开始 -->
+	<select id="queryByBasicPeopleId"  resultMap="resultMap">
+		select  COMMENT_ID,COMMENT_COMMENTID,COMMENT_CONTENT,COMMENT_PICTURE,COMMENT_TIME,COMMENT_TYPE,COMMENT_PEOPLEID,COMMENT_POINTS,COMMENT_BASICID,
+		BASIC_TITLE,PEOPLE_NAME,PU_ICON,PU_NICKNAME from v_subject_comment 
+		<where>
+			<if test="appId != null">
+				and basic_appid=#{appId}
+			</if>
+			<if test="basicPeopleId != null">
+				and BASIC_PEOPLEID=#{basicPeopleId}
+			</if>
+			<if test="orderBy != null">
+				order by ${orderBy}
+			</if>
+			<if test="order == true">
+				ASC
+			</if>
+			<if test="order == false">
+				DESC
+			</if>
+			<if test="page != null">
+				limit
+				${page.pageNo*page.pageSize},#{page.pageSize}
+			</if>
+		</where>
+	</select>
+
+	<select id="countByBasicPeopleId" resultType="int">
+		select count(*) from v_subject_comment
+		<where>
+			<if test="appId != null">
+				and basic_appid=#{appId}
+			</if>
+			<if test="basicPeopleId != null">
+				and BASIC_PEOPLEID=#{basicPeopleId}
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	
+	
+	
+	<!-- 根据用户id以及其他条件查询该用户帖子的所有评论总数开始 -->
+	<select id="getcountByPeopleIdAndMap" resultType="int">
+		select count(*) from v_subject_comment
+		<where>
+			<if test="appId != null">
+				and basic_appid=#{appId}
+			</if>
+			<if test="basicPeopleId != null">
+				and BASIC_PEOPLEID=#{basicPeopleId}
+			</if>
+			
+			<if test="whereMap != null">
+				<if test="whereMap.commentTimeStart!=null and whereMap.commentTimeEnd!=''">
+					and ((COMMENT_TIME) between #{whereMap.commentTimeStart} and
+					#{whereMap.commentTimeEnd})
+				</if>
+			</if>
+		</where>
+	</select>
+	<!-- 根据用户id以及其他条件查询该用户帖子的所有评论总数结束 -->
+	
+	<!-- 根据用户id以及其他条件查询该用户的回复消息总数开始 -->
+	<select id="getReplyByPeopleId" resultType="int">
+		select count(*) from `comment` `soncomment`
+		 JOIN `comment` as  parentComment ON `soncomment`.`COMMENT_COMMENTID` = `parentComment`.`COMMENT_ID`
+			LEFT JOIN basic on parentComment.COMMENT_BASICID = basic.BASIC_ID
+		<where>
+			
+			soncomment.COMMENT_APPID = #{appId}
+			AND parentComment.COMMENT_PEOPLEID = #{peopleId}
+			<if test="whereMap != null">
+				<if test="whereMap.commentTimeStart!=null and whereMap.commentTimeEnd!=''">
+					and ((soncomment.COMMENT_TIME) between #{whereMap.commentTimeStart} and
+					#{whereMap.commentTimeEnd})
+				</if>
+			</if>
+		</where>
+	</select>
+	<!-- 根据用户id以及其他条件查询该用户的所有子评论总数结束 -->
+	
+	
+	
+	<!-- 根据用户id以及其他条件查询该用户的回复消息列表开始 -->
+	<select id="queryReplyByPeopleId"  resultMap="resultMap">
+		select 
+		basic_title,soncomment.COMMENT_ID as COMMENT_ID,parentComment.COMMENT_ID as COMMENT_COMMENTID,soncomment.COMMENT_CONTENT as comment_content,
+		soncomment.COMMENT_BASICID as COMMENT_BASICID,soncomment.COMMENT_TYPE as COMMENT_TYPE,
+		soncomment.COMMENT_TIME  as COMMENT_TIME,PEOPLE_NAME,`soncomment`.COMMENT_PEOPLEID as COMMENT_PEOPLEID,PU_NICKNAME,PU_ICON
+		FROM 
+		`comment` `soncomment`
+		 JOIN `comment` as  parentComment ON `soncomment`.`COMMENT_COMMENTID` = `parentComment`.`COMMENT_ID`
+			LEFT JOIN basic on parentComment.COMMENT_BASICID = basic.BASIC_ID
+			LEFT JOIN `people` ON `soncomment`.`COMMENT_PEOPLEID` = `people`.`PEOPLE_ID`
+		   LEFT JOIN `people_user` ON 
+			`soncomment`.`COMMENT_PEOPLEID` = `people_user`.`PU_PEOPLE_ID`
+		<where>
+			soncomment.COMMENT_APPID = #{appId}
+			AND parentComment.COMMENT_PEOPLEID = #{peopleId}
+			<if test="whereMap != null">
+				<if test="whereMap.commentTimeStart!=null and whereMap.commentTimeEnd!=''">
+					and ((soncomment.COMMENT_TIME) between #{whereMap.commentTimeStart} and
+					#{whereMap.commentTimeEnd})
+				</if>
+			</if>
+		</where>
+		<if test="orderBy != null">
+				order by ${orderBy}
+			<if test="order == true">
+				ASC
+			</if>
+			<if test="order == false">
+				DESC
+			</if>
+		</if>
+		<if test="orderBy == null">
+				order by soncomment.COMMENT_TIME
+				<if test="order == true">
+					ASC
+				</if>
+				<if test="order == false">
+					DESC
+				</if>
+				,parentComment.COMMENT_TIME
+				<if test="order == true">
+					ASC
+				</if>
+				<if test="order == false">
+					DESC
+				</if>
+			</if>
+			
+			<if test="page != null">
+				limit
+				${page.pageNo*page.pageSize},#{page.pageSize}
+			</if>
+			
+	</select>
+	<!-- 根据用户id以及其他条件查询该用户的回复消息列表结束 -->
+	
+	<!-- 根据帖子basicId查询评论 
+	<select id="query" resultMap="resultMap" parameterType="int">
+		select COMMENT_CONTENT,COMMENT_TIME,PU_ICON,PU_NICKNAME
+		from comment
+		left join people_user
+		on COMMENT_PEOPLEID = PU_PEOPLE_ID
+		where COMMENT_BASICID = #{commentBasicId}
+		order by COMMENT_ID DESC
+	</select>
+	-->
+	
+	
+	<!-- 更新评论开始 -->
+	<update id="updateType" parameterType="int">
+		update comment
+		<set>
+			<if test="commentType != null">COMMENT_TYPE=#{commentType}</if>
+		</set>
+		<where>
+    		COMMENT_ID in <foreach collection="commentIds" item="item" index="index" 
+			open="(" separator="," close=")">#{item}</foreach>
+		</where>
+	</update>
+	<!-- 更新评论结束 -->
+</mapper>

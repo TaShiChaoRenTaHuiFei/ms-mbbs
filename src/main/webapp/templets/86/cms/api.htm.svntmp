@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>ms-api</title>
+{ms:include filename=header.htm/} 
+<script src="{ms:globalskin.url/}/js/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="{ms:globalskin.url/}/css/apibase.css" />
+</head>
+<body>
+{ms:include filename=head.htm/}
+<header class="jumbotron subhead">
+  <div class="container">
+    <h1>ms-api <small>Version: 0.0.1 By @Joy</small></h1>
+    <p class="lead"> ming-soft api </p>
+  </div>
+</header>
+<div class="container content">
+  <div class="row">
+    <div class="col-md-3 bs-docs-sidebar">
+      <ul class="nav nav-list bs-docs-sidenav affix">
+        <li>
+          <div class="accordion" id="ms.people">
+            <div class="accordion-group">
+              <div class="accordion-heading"> <a href="#api_ms.people" class="api_side_link">ms.people</a>
+                <div class="accordion-marker"> <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#ms.people" > <span class="glyphicon glyphicon-chevron-right"></span> </a> </div>
+              </div>
+              <div class="accordion-body collapse" id="collapse_ms.people">
+                <div class="accordion-inner">
+                  <ul class="indexs">
+                    <li> <a href="#ms.people__register">register</a> </li>
+                    <li> <a href="#ms.people__sendCode">sendCode</a> </li>
+                    <li> <a href="#ms.people__checkSendCode">checkSendCode</a> </li>
+                    <li> <a href="#ms.people__check">check</a> </li>
+                    <li> <a href="#ms.people__isExists">isExists</a> </li>
+                    <li> <a href="#ms.people__checkCode">checkCode</a> </li>
+                    <li> <a href="#ms.people__checkLoginStatus">checkLoginStatus</a> </li>
+                    <li> <a href="#ms.people__checkLogin">checkLogin</a> </li>
+                    <li> <a href="#ms.people__checkResetPasswordCode">checkResetPasswordCode</a> </li>
+                    <li> <a href="#ms.people__resetPassword">resetPassword</a> </li>
+                    <li> <a href="#ms.people__quit">quit</a> </li>
+                    <li> <a href="#ms.people__checkPeopleCode">checkPeopleCode</a> </li>
+                    <li> <a href="#ms.people__update">update</a> </li>
+                    <li> <a href="#ms.people__info">info</a> </li>
+                    <li> <a href="#ms.people__changePassword">changePassword</a> </li>
+                    <li> <a href="#ms.people__info">info</a> </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <script>
+(function(){
+  $(".bs-docs-sidenav").delegate(".accordion-heading","click",function(){
+    $(this).next().slideToggle();
+  })
+})()
+</script> 
+    </div>
+    <div class="col-md-9">
+      <h2>1、使用铭飞js-API接口需要依赖以下静态资源文件</h2>
+      <pre class="prettyprint"><code><span class="tag"><span class="tag">&lt;script</span></span><span class="pln"><span class="pln"> </span></span><span class="atn"><span class="atn">src</span></span><span class="pun"><span class="pun">=</span></span><span class="atv"><span class="atv">"http://cdn.mingsoft.net/plugins/jquery/1.9.1/jquery-1.9.1.js"</span></span><span class="tag"><span class="tag">&gt;&lt;/script&gt;<br/></span></span><span class="pln"><span class="pln"> </span></span><span class="tag"><span class="tag">&lt;script</span></span><span class="pln"><span class="pln"> </span></span><span class="atn"><span class="atn">src</span></span><span class="pun"><span class="pun">=</span></span><span class="atv"><span class="atv">"http://cdn.mingsoft.net/plugins/seajs/3.0.0/sea.js"</span></span><span class="tag"><span class="tag">&gt;&lt;/script&gt;<br/></span></span><span class="pln"><span class="pln"> </span></span><span class="tag"><span class="tag">&lt;script</span></span><span class="pln"><span class="pln"> </span></span><span class="atn"><span class="atn">src</span></span><span class="pun"><span class="pun">=</span></span><span class="atv"><span class="atv">"http://cdn.mingsoft.net/model/1.0.0/main.js"</span></span><span class="tag"><span class="tag">&gt;&lt;/script&gt;<br/></span></span><span class="pln"><span class="pln"> </span></span><span class="tag"><span class="tag">&lt;script&gt;</span></span><span class="pln"><span class="pln"> ms</span></span><span class="pun"><span class="pun">.</span></span><span class="pln"><span class="pln">config</span></span><span class="pun"><span class="pun">({</span></span><span class="pln"><span class="pln"> base</span></span><span class="pun"><span class="pun">:</span></span><span class="str"><span class="str">"{ms:global.host/}"</span></span><span class="pln"><span class="pln"> </span></span><span class="pun"><span class="pun">});</span></span><span class="pln"><span class="pln"> </span></span><span class="tag"><span class="tag">&lt;/script&gt;</span></span><br/>&lt;!--http://ms.mingsoft.net用域名标签代替，这里标签被解析了，花括号ms:global.host/花括号&gt;</code></pre>
+      <h2>2、模块加载</h2>
+      <pre><code>$(function(){
+    //加载需要用到的接口模块，多个模块用“,”隔开，并且在对应位置声明一个对应模块的变量(可与模块名相同),如下示例引用的ms.people和ms.mbbs两个模块，对应的变量声明为mpeople和mbbs。另外ms为基础层模块，使用ms.code加载验证码需要加载ms模块，声明变量为ms
+  ms.load([&#34;ms.people&#34;,&#34;ms.mbbs&#34;],function(mpeople,mbbs) {
+    //需要用的接口方法
+    mpeople.register($(&#34;form&#34;).serialize(),function(returnJson){
+      alert(JSON.stringify(returnJson));
+    })
+  })
+})</code></pre>
+      <h2>3、参数说明</h2>
+      <p>多参数以表单序列化形式进行传参<br/>
+        单个参数传入当前参数值即可 </p>
+      <section id="api_ms.people" class="api">
+        <h2>ms.people: API</h2>
+        <hr />
+        <h2 data-id="ms.people__register"> register </h2>
+        <h2>用户注册</h2>
+        <p>用户可以用名称、手机号、邮箱三者之一进行注册<br />
+          几种注册流程的形式：<br />
+          1、普通用户名称、登录密码，优先用户名注册,登录密码最长度范围6～12个字符；<br />
+          2、邮箱、邮箱验证码、登录密码（邮箱必须是可接收验证码）；<br />
+          3、手机号、短信验证码、登录密码；<br />
+          注意： 1、注册页面必须存在图片验证码<br />
+          2、如果需要接收验证码操作，需要使用“发送验证码”配合使用才能完成注册流程</p>
+        <h4>调用方法</h4>
+        <pre><code>register(data,function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peoplePhone</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>手机号</p></td>
+          </tr>
+          <tr>
+            <td>peopleName</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>用名称 用户名长度在3～12个字符之间，只能是字母数字混合</p></td>
+          </tr>
+          <tr>
+            <td>peopleMail</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>邮箱</p></td>
+          </tr>
+          <tr>
+            <td>peoplePassword</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>注册密码</p></td>
+          </tr>
+          <tr>
+            <td>rand_code</td>
+            <td>strings</td>
+            <td> 必填 </td>
+            <td><p>验证码</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>resultMsg</td>
+            <td colspan="3"><p>提示信息</p></td>
+          </tr>
+          <tr>
+            <td>code</td>
+            <td colspan="3"><p>错误编码</p></td>
+          </tr>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;form name=&#34;registe&#34;&gt;
+  &lt;input type=&#34;text&#34; name=&#34;peopleName&#34; /&gt; &lt;!--注册用户名--&gt;
+  &lt;input type=&#34;password&#34; name=&#34;peoplePassword&#34;/&gt; &lt;!--注册密码--&gt;
+  &lt;input type=&#34;password&#34; name=&#34;rePassword&#34;/&gt; &lt;!--确认注册密码，需要做前端验证，此接口不提供验证--&gt;
+  &lt;input type=&#34;text&#34;  name=&#34;rand_code&#34; /&gt; &lt;!--验证码--&gt;
+  &lt;img id=&#34;registeCode&#34;/&gt; 
+&lt;/form&gt;
+...
+//验证码加载与点击刷新
+ms.code(&#34;registeCode&#34;);
+$(&#34;#registeCode&#34;).click(function(){
+  ms.code(&#34;registeCode&#34;);
+});
+mpeople.register($(&#34;form&#34;).serialize(),function(returnJson){
+  alert(JSON.stringify(returnJson));
+})
+...</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{&#34;resultMsg&#34;:&#34;æ³¨å†ŒæˆåŠŸ&#34;,&#34;result&#34;:true,&#34;code&#34;:&#34;07010100&#34;}</code></pre>
+        <h2 data-id="ms.people__sendCode"> sendCode </h2>
+        <h2>发送验证码</h2>
+        <p>用户发送验证码，可以通过邮箱或手机发送</p>
+        <h4>调用方法</h4>
+        <pre><code>sendCode(data,function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>receive</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>接收地址，只能是邮箱或手机号，邮箱需要使用邮箱插件，手机号需要短信插件</p></td>
+          </tr>
+          <tr>
+            <td>modelCode</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>对应邮件插件的模块编号</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;form name=&#34;sendEmailCode&#34;&gt;
+  &lt;input type=&#34;text&#34; name=&#34;receive&#34; /&gt; &lt;!--接收地址，本案例为邮箱--&gt;
+  &lt;input type=&#34;text&#34; name=&#34;modelCode&#34; type=&#34;hidden&#34; value=&#34;后台邮件插件模块编号&#34;/&gt;
+...
+&lt;/form&gt;
+...
+mpeople.sendCode($(&#34;form&#34;).serialize(),function(returnJson){
+  alert(JSON.stringify(returnJson));
+});
+...</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{result:&#34;true&#34;}</code></pre>
+        <h2 data-id="ms.people__checkSendCode"> checkSendCode </h2>
+        <h2>验证用户输入的接收验证码</h2>
+        <h4>调用方法</h4>
+        <pre><code>checkSendCode(data,function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>receive</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>接收地址，只能是邮箱或手机号，邮箱需要使用邮箱插件，手机号需要短信插件</p></td>
+          </tr>
+          <tr>
+            <td>code</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>对应接收的验证码</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;form name=&#34;sendEmailCode&#34;&gt;
+  &lt;input type=&#34;text&#34; name=&#34;receive&#34; /&gt; &lt;!--接收地址，本案例为邮箱--&gt;
+  &lt;input type=&#34;text&#34; name=&#34;modelCode&#34; type=&#34;hidden&#34; value=&#34;后台邮件插件模块编号&#34;/&gt;
+...
+  &lt;input type=&#34;text&#34; name=&#34;code&#34; /&gt;
+...
+&lt;/form&gt;
+...
+mpeople.checkSendCode($(&#34;form&#34;).serialize(),function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{result:&#34;true&#34;}</code></pre>
+        <h2 data-id="ms.people__check"> check </h2>
+        <h2>用户名、邮箱、手机号验证（验证是否已保存的手机号或邮箱）</h2>
+        <p>验证用户名、手机号、邮箱是否可用，同一时间只能判断一种，优先用户名称<br />
+          适用场景:<br />
+          1、用户注册是对用户名、邮箱或手机号唯一性判断<br />
+          2、用户取回密码是判断账号是否存在</p>
+        <h4>调用方法</h4>
+        <pre><code>check(data,function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peopleName</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>用户名称验证</p></td>
+          </tr>
+          <tr>
+            <td>peopleMail</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>用户邮箱验证</p></td>
+          </tr>
+          <tr>
+            <td>peoplePhone</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>用户手机验证</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>code</td>
+            <td colspan="3"><p>模块编码</p></td>
+          </tr>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true存在｜false不存在或错误</p></td>
+          </tr>
+          <tr>
+            <td>resultMsg</td>
+            <td colspan="3"><p>错误信息</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;form&gt;
+...
+  &lt;input type=&#34;text&#34; name=&#34;peopleName&#34; /&gt; &lt;!--接收地址，本案例为用户名判断--&gt;
+...
+&lt;/form&gt;
+...
+mpeople.check($(&#34;form&#34;).serialize(),function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{result:&#34;true&#34;}</code></pre>
+        <h2 data-id="ms.people__isExists"> isExists </h2>
+        <h2>用户名、邮箱、手机号验证（验证是否绑定成功的手机号或邮箱）</h2>
+        <p>验证用户名、手机号、邮箱是否可用，同一时间只能判断一种，优先用户名称<br />
+          适用场景:<br />
+          1、用户注册是对用户名、邮箱或手机号唯一性判断<br />
+          2、用户取回密码是判断账号是否存在<br />
+          3、用户绑定邮箱或者手机号验证，邮箱或手机号是否存在并已绑定</p>
+        <h4>调用方法</h4>
+        <pre><code>isExists(data,function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peopleName</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>用户名称验证</p></td>
+          </tr>
+          <tr>
+            <td>peopleMail</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>用户邮箱验证，注意：只验证绑定成功的邮箱</p></td>
+          </tr>
+          <tr>
+            <td>peoplePhone</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>用户手机验证，注意：只验证绑定成功的手机</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>code</td>
+            <td colspan="3"><p>模块编码</p></td>
+          </tr>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true存在｜false不存在或错误</p></td>
+          </tr>
+          <tr>
+            <td>resultMsg</td>
+            <td colspan="3"><p>错误信息</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;form&gt;
+...
+  &lt;input type=&#34;text&#34; name=&#34;peopleName&#34; /&gt; &lt;!--接收地址，本案例为用户名判断--&gt;
+...
+&lt;/form&gt;
+...
+mpeople.isExists($(&#34;form&#34;).serialize(),function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{result:&#34;true&#34;}</code></pre>
+        <h2 data-id="ms.people__checkCode"> checkCode </h2>
+        <h2>图片验证码验证</h2>
+        <p>例如流程需要短信验证或邮箱验证，为有效防止恶意发送验证码。提供给ajax异步请求使用<br />
+          注意：页面提交对验证码表单属性名称必须是rand_code，否则无效</p>
+        <h4>调用方法</h4>
+        <pre><code>checkCode(rand_code,function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>rand_code</td>
+            <td>strings</td>
+            <td> 必填 </td>
+            <td><p>验证码</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>code</td>
+            <td colspan="3"><p>错误编码</p></td>
+          </tr>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+          <tr>
+            <td>resultMsg</td>
+            <td colspan="3"><p>提示信息</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;form name=&#34;picCode&#34;&gt;
+  &lt;input type=&#34;text&#34;  name=&#34;rand_code&#34; /&gt; &lt;!--填写验证码--&gt;
+  &lt;img id=&#34;picCode&#34;/&gt; &lt;!--图片验证码--&gt;
+&lt;/form&gt;
+...
+//验证码加载与点击刷新
+ms.code(&#34;picCode&#34;);
+$(&#34;#picCode&#34;).click(function(){
+  ms.code(&#34;picCode&#34;);
+});
+var code = $(&#34;input[name=rand_code]&#34;).val();
+mpeople.checkCode(code,function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{code:&#34;错误编码&#34;,result:&#34;true成功、false失败&#34;,resultMsg: &#34;提示信息&#34;}</code></pre>
+        <h2 data-id="ms.people__checkLoginStatus"> checkLoginStatus </h2>
+        <h2>确认用户登录状态</h2>
+        <h4>调用方法</h4>
+        <pre><code>checkLoginStatus(function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+mpeople.checkLoginStatus(function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{result:&#34;false&#34;}</code></pre>
+        <h2 data-id="ms.people__checkLogin"> checkLogin </h2>
+        <h2>用户登录</h2>
+        <p>登录验证,登录必须存在验证码 </p>
+        <h4>调用方法</h4>
+        <pre><code>checkLogin(data,function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peopleName</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>用户名</p></td>
+          </tr>
+          <tr>
+            <td>peoplePassword</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>登录密码</p></td>
+          </tr>
+          <tr>
+            <td>rand_code</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>验证码</p></td>
+          </tr>
+          <tr>
+            <td>peopleAutoLogin</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>自动登录 如果大于0表示开启自动登录，1表示自动登录保留1天</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>code</td>
+            <td colspan="3"><p>错误编码</p></td>
+          </tr>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+          <tr>
+            <td>resultMsg</td>
+            <td colspan="3"><p>提示信息</p></td>
+          </tr>
+          <tr>
+            <td>resultData</td>
+            <td colspan="3"><p>{&quot;peopleAutoLogin&quot;:自动登录多少天,&quot;peopleName&quot;:用户,&quot;peopleId&quot;:用户编号,&quot;peopleMail &quot;:用户邮箱}</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;form name=&#34;login&#34;&gt;
+  &lt;input type=&#34;text&#34; name=&#34;peopleName&#34; /&gt; &lt;!--登录用户名，手机号或邮箱--&gt;
+  &lt;input type=&#34;password&#34; name=&#34;peoplePassword&#34;/&gt; &lt;!--登录密码--&gt;
+  &lt;input type=&#34;text&#34;  name=&#34;rand_code&#34; /&gt; &lt;!--验证码--&gt;
+  &lt;img id=&#34;loginCode&#34;/&gt; 
+...
+&lt;/form&gt;
+...
+//验证码加载与点击刷新
+ms.code(&#34;loginCode&#34;);
+$(&#34;#loginCode&#34;).click(function(){
+  ms.code(&#34;loginCode&#34;);
+});
+mpeople.checkLogin($(&#34;form&#34;).serialize(),function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{&#34;resultMsg&#34;:&#34;{
+  \&#34;peopleAppId\&#34;:0,
+  \&#34;peopleAutoLogin\&#34;:0,
+  \&#34;peopleId\&#34;:9020,
+  \&#34;peopleMailCheck\&#34;:0,
+  \&#34;peopleName\&#34;:\&#34;mstest\&#34;,
+  \&#34;peoplePhoneCheck\&#34;:0,
+  \&#34;peopleState\&#34;:0}&#34;,
+&#34;result&#34;:true,
+&#34;code&#34;:&#34;07010200&#34;}</code></pre>
+        <h2 data-id="ms.people__checkResetPasswordCode"> checkResetPasswordCode </h2>
+        <h2>验证重置密码过程中收到的验证码是否正确</h2>
+        <h4>调用方法</h4>
+        <pre><code>checkResetPasswordCode(data,function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peopleCode</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>短信、邮箱验证码</p></td>
+          </tr>
+          <tr>
+            <td>rand_code</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>验证码，可能会传递经过多个流程，具体根据业务确定</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;form name=&#34;resetPassword&#34;&gt;
+...
+  &lt;input type=&#34;text&#34; name=&#34;peopleCode&#34;/&gt;
+  &lt;input type=&#34;text&#34;  name=&#34;rand_code&#34; /&gt; &lt;!--验证码--&gt;
+  &lt;img id=&#34;checkResetPasswordCodeCode&#34;/&gt; 
+...
+&lt;/form&gt;
+...
+//验证码加载与点击刷新
+ms.code(&#34;checkResetPasswordCodeCode&#34;);
+$(&#34;#checkResetPasswordCodeCode&#34;).click(function(){
+  ms.code(&#34;checkResetPasswordCodeCode&#34;);
+});
+mpeople.checkResetPasswordCode($(&#34;form&#34;).serialize(),function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{result:&#34;true&#34;}</code></pre>
+        <h2 data-id="ms.people__resetPassword"> resetPassword </h2>
+        <h2>用户重置密码</h2>
+        <p>当用户忘记登录密码时可以通过注册绑定的邮箱或绑定的手机号进行取回，操作过程中需要通过邮件模块与短信模块发送验证码给用户<br />
+          业务场景：用户输入手机号（邮箱），点击发送验证码,发送间隔时间为60秒,用户将接收到的验证码输入提交,此接口不会对用户再次输入新密码进行判断，需要开发者做前端判断</p>
+        <h4>调用方法</h4>
+        <pre><code>resetPassword(data,function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peoplePassword</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>用户新密码</p></td>
+          </tr>
+          <tr>
+            <td>rand_code</td>
+            <td>string</td>
+            <td> 必填 </td>
+            <td><p>验证码</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>code</td>
+            <td colspan="3"><p>错误编码</p></td>
+          </tr>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+          <tr>
+            <td>resultMsg</td>
+            <td colspan="3"><p>提示信息</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;form name=&#34;resetPassword&#34;&gt;
+...
+  &lt;input type=&#34;text&#34; name=&#34;peoplePassword&#34;/&gt;
+  &lt;input type=&#34;text&#34;  name=&#34;rand_code&#34; /&gt; &lt;!--验证码--&gt;
+  &lt;img id=&#34;resetPasswordCode&#34;/&gt; 
+...
+&lt;/form&gt;
+...
+//验证码加载与点击刷新
+ms.code(&#34;resetPasswordCode&#34;);
+$(&#34;#resetPasswordCode&#34;).click(function(){
+  ms.code(&#34;resetPasswordCode&#34;);
+});
+mpeople.resetPassword($(&#34;form&#34;).serialize(),function(returnJson){
+  alert(JSON.stringify(returnJson));
+});
+...</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{code:&#34;0777700&#34;,result:true,resultMsg: &#34;提示信息&#34;}</code></pre>
+        <h2 data-id="ms.people__quit"> quit </h2>
+        <h2>退出登录</h2>
+        <h4>调用方法</h4>
+        <pre><code>people.quit(function(){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>无返回值</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>none</td>
+            <td colspan="3"><p>无返回值</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;a href=&#34;#&#34; class=&#34;quitLogin&#34;&gt;退出&lt;/a&gt;
+...
+mpeople.people.quit(function(){
+  alert(&#34;退出成功&#34;);
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>无返回值</code></pre>
+        <h2 data-id="ms.people__checkPeopleCode"> checkPeopleCode </h2>
+        <h2>验证用户短信、邮箱验证码是否正确</h2>
+        <h4>调用方法</h4>
+        <pre><code>people.checkLogin(function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peopleCode</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>短信、邮箱验证码</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>code</td>
+            <td colspan="3"><p>编码</p></td>
+          </tr>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>mpeople.people.checkLogin(peopleCode,function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{code:&#34;模块编码&#34;,result:true}</code></pre>
+        <h2 data-id="ms.people__update"> update </h2>
+        <h2>更新用户邮箱或手机号,二者必须存在一个</h2>
+        <h4>调用方法</h4>
+        <pre><code>people.update(function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peopleMail</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>邮箱</p></td>
+          </tr>
+          <tr>
+            <td>peoplePhone</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>手机号</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>code</td>
+            <td colspan="3"><p>模块编码</p></td>
+          </tr>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+          <tr>
+            <td>resultMsg</td>
+            <td colspan="3"><p>错误信息</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>...
+&lt;form name=&#34;update&#34;&gt;
+...
+  &lt;input type=&#34;text&#34; name=&#34;peoplePhone&#34;/&gt;
+...
+&lt;/form&gt;
+...
+mpeople.people.update($(&#34;form&#34;).serialize(),function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{code:&#34;模块编码&#34;,result:true,resultMsg:&#34;&#34;}</code></pre>
+        <h2 data-id="ms.people__info"> info </h2>
+        <h2>读取当前登录用户的基本信息 用户信息</h2>
+        <h4>调用方法</h4>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peopleAutoLogin</td>
+            <td colspan="3"><p>自动登录多少天</p></td>
+          </tr>
+          <tr>
+            <td>peopleName</td>
+            <td colspan="3"><p>用户名</p></td>
+          </tr>
+          <tr>
+            <td>peopleDateTime</td>
+            <td colspan="3"><p>用户登录时间</p></td>
+          </tr>
+          <tr>
+            <td>peopleId</td>
+            <td colspan="3"><p>用户编号</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>mpeople.people.info(function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{
+  &#34;peopleAutoLogin&#34;:0,
+  &#34;peopleName&#34;:&#34;mstest&#34;,
+  &#34;peopleDateTime&#34;:&#34;2016-05-08 13:14:00&#34;,
+  &#34;peopleId&#34;:5201314,
+}</code></pre>
+        <h2 data-id="ms.people__changePassword"> changePassword </h2>
+        <h2>修改密码</h2>
+        <h4>调用方法</h4>
+        <pre><code>people.changePassword(peoplePassword,function(returnJson){...});</code></pre>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peoplePassword</td>
+            <td>string</td>
+            <td> 可选 </td>
+            <td><p>新密码</p></td>
+          </tr>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>code</td>
+            <td colspan="3"><p>模块编码</p></td>
+          </tr>
+          <tr>
+            <td>result</td>
+            <td colspan="3"><p>true成功、false失败</p></td>
+          </tr>
+          <tr>
+            <td>resultMsg</td>
+            <td colspan="3"><p>错误信息</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>mpeople.people.changePassword(peoplePassword,function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{code:&#34;模块编码&#34;,result:true,resultMsg:&#34;&#34;}</code></pre>
+        <h2 data-id="ms.people__info"> info </h2>
+        <h2>获取登录用户详细信息</h2>
+        <h4>调用方法</h4>
+        <h4>参数说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th>类型</th>
+              <th>是否必须</th>
+              <th style="width: 50%">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>回调方法</td>
+            <td>function</td>
+            <td> 必填 </td>
+            <td><p>返回值（returnJson）</p></td>
+          </tr>
+        </table>
+        <h4>返回值说明</h4>
+        <table class="table table-bordered table-striped js-options-table">
+          <thead>
+            <tr>
+              <th>名称</th>
+              <th colspan="3">描述</th>
+            </tr>
+          </thead>
+          <tr>
+            <td>peopleId</td>
+            <td colspan="3"><p>用户id 示例值：&gt;0</p></td>
+          </tr>
+          <tr>
+            <td>peopleUserNickName</td>
+            <td colspan="3"><p>昵称</p></td>
+          </tr>
+          <tr>
+            <td>peopleUserCard</td>
+            <td colspan="3"><p>身份证号码</p></td>
+          </tr>
+          <tr>
+            <td>peopleUserIcon</td>
+            <td colspan="3"><p>头像</p></td>
+          </tr>
+          <tr>
+            <td>peopleUserBirthday</td>
+            <td colspan="3"><p>用户生日 示例值：“2014-12-29”</p></td>
+          </tr>
+          <tr>
+            <td>peopleUserRealName</td>
+            <td colspan="3"><p>真实姓名</p></td>
+          </tr>
+          <tr>
+            <td>peopleUserSex</td>
+            <td colspan="3"><p>用户性别 0未知\1男\2女</p></td>
+          </tr>
+        </table>
+        <h4>请求实例</h4>
+        <pre><code>mpeople.people.user.info(function(returnJson){
+  alert(JSON.stringify(returnJson));
+});</code></pre>
+        <h4>返回值实例</h4>
+        <pre><code>{
+  &#34;peopleId&#34;:9020,
+  &#34;peopleAutoLogin&#34;:0,
+  &#34;peopleDateTime&#34;:&#34;2016-05-08 21:42:06&#34;,
+  &#34;peopleMailCheck&#34;:0,
+  &#34;peopleName&#34;:&#34;mstest&#34;,
+  &#34;peoplePhoneCheck&#34;:0,
+  &#34;peopleState&#34;:0,
+  &#34;peopleUserSex&#34;:1
+}</code></pre>
+      </section>
+    </div>
+  </div>
+</div>
+{ms:include filename=footer.htm/}
+<script>
+      $(function() {
+        $('pre').addClass('prettyprint');
+        $('td pre').removeClass('prettyprint');
+        prettyPrint();
+        var $window = $(window);
+        var sidenav = $('.bs-docs-sidenav');
+        if (sidenav.height() < window.innerHeight) {
+          sidenav.affix({
+            offset: {
+              top: function () {
+                return $window.width() <= 980 ? 290 : 210
+              },
+              bottom: 200
+            }
+          });
+        } else {
+          sidenav.removeClass('affix');
+        }
+        $(".content").find('h1, h2, h3, h4, h5, h6').each(function () {
+          var node = $(this);
+          // 总是设置id
+          node.attr("id", node.data('id') || "index_" + node.text());
+        });
+
+        $('.bs-docs-sidenav .accordion-marker').on('click', function(event) {
+          var current = $(event.currentTarget);
+          current.find('.glyphicon').toggleClass('glyphicon-chevron-right glyphicon-chevron-down');
+        });
+      });
+    </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 管理员持久化层XML配置继承IRoleDao -->
+<mapper namespace="com.mingsoft.bbs.dao.IPeopleGroupDao">
+	<!-- 将实体属性与表字段对接开始 -->
+	<resultMap id="resultMap" type="com.mingsoft.bbs.entity.PeopleGroupEntity">
+		<result column="CATEGORY_ID" property="categoryId"/> <!-- 用户组id -->
+		<result column="CATEGORY_SORT" property="categorySort"/> <!-- 用户组id -->
+		<result column="CATEGORY_TITLE" property="categoryTitle"/><!-- 用户组最小积分范围 -->
+		<result column="CATEGORY_SMALLIMG" property="categorySmallImg"/><!-- 用户组最小积分范围 -->
+		<association column="CATEGORY_ID" property="peopleGroupScoreList"
+			javaType="com.mingsoft.bbs.entity.PeopleGroupScoreEntity">
+			<result column="pgs_group_id" property="peopleGroupScoreGroupId" />
+			<result column="pgs_min_score" property="peopleGroupScoreMinScore"/><!-- 用户组最小积分范围 -->
+			<result column="pgs_max_score" property="peopleGroupScoreMaxScore"/><!--用户组最大积分范围-->
+			<result column="pgs_bs_id" property="peopleGroupScoreBankScoreId"/><!-- -->
+			<result column="bs_type_title" property="peopleGroupScoreBankScoreTitle"/><!-- -->
+		</association>
+	</resultMap>
+	<!-- 将实体属性与表字段对接结束 -->
+	
+	<!-- 查询用户分类开始 -->
+	<select id="queryByAppIdAndModelId" resultMap="resultMap" parameterType="int">
+		select CATEGORY_ID,CATEGORY_TITLE,CATEGORY_SORT,bs_type_title,CATEGORY_SMALLIMG,pgs_min_score,pgs_max_score,pgs_bs_id
+			from  category left join mbbs_people_group_score on pgs_group_id=CATEGORY_ID
+			left join bank_score on pgs_bs_id =bs_id
+			where
+			CATEGORY_APPID = #{appId}
+			and CATEGORY_MODELID=#{modelId}
+			<if test="orderBy!=null">
+				ORDER BY  ${orderBy}
+			</if>
+			<if test="orderBy==null">
+				ORDER BY CATEGORY_ID
+			</if>
+			<if test="order==true">
+				 DESC
+			</if>
+			<if test="order==false">
+				 ASC
+			</if>
+			
+	</select>
+	<!-- 查询用户分类结束 -->
+	
+	
+	
+	
+	<!-- 查询用户分类总数开始 -->
+	<select id="getPeopleGroup" resultMap="resultMap" parameterType="int">
+		select CATEGORY_ID,CATEGORY_TITLE,CATEGORY_SORT,bs_type_title,CATEGORY_SMALLIMG,pgs_min_score,pgs_max_score,pgs_bs_id
+			from  category left join mbbs_people_group_score on pgs_group_id=CATEGORY_ID
+			left join bank_score on pgs_bs_id =bs_id
+			where
+			CATEGORY_ID = #{groupId}
+			
+	</select>
+	<!-- 查询用户分类总数结束 -->
+	
+	<!-- 查询用户分类总数开始 -->
+	<select id="getLastOrFirstPeopleGroupId" resultType="int" parameterType="Integer">
+		select  CATEGORY_ID from  category 
+			where CATEGORY_APPID = #{appId}
+			and CATEGORY_MODELID=#{modelId}
+			<if test="isLast==false">
+				ORDER BY CATEGORY_ID asc
+				limit 0,1
+			</if>
+			<if test="isLast==true">
+				ORDER BY CATEGORY_ID DESC
+				limit 0,1
+			</if>
+			
+	</select>
+	<!-- 查询用户分类总数结束 -->
+	
+	<!-- 根据commentId删除多条评论 -->
+	<delete id="delete" parameterType="int">
+		DELETE  FROM `category`
+		<where>
+    		CATEGORY_ID in <foreach collection="groupIds" item="item" index="index" 
+			open="(" separator="," close=")">#{item}</foreach>
+		</where>
+	</delete>
+	<!-- 根据commentId删除多条评论 -->
+	
+	<!-- 查询上一个用户等级实体或下一个用户等级实体id开始 -->
+	<select id="getNextOrPrePeopleGroupId" resultType="int" parameterType="Integer">
+		select  CATEGORY_ID
+			from  category 
+			where CATEGORY_APPID = #{appId}
+			and CATEGORY_MODELID=#{modelId}
+			
+			<if test="isNext==false">
+				and CATEGORY_ID &lt; #{groupId}
+				ORDER BY CATEGORY_ID DESC
+				limit 0,1
+			</if>
+			<if test="isNext==true">
+				and CATEGORY_ID &gt; #{groupId}
+				ORDER BY CATEGORY_ID asc
+				limit 0,1
+			</if>
+			
+	</select>
+	<!-- 查询上一个用户等级实体或下一个用户等级实体id结束 -->
+	
+</mapper>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xml:lang="zh-CN">
+    <head>
+        <title>{ms:global.name/}-社区官方论坛</title>
+        {ms:include filename=header.htm/} 
+        {ms:include filename=mbbs/header.htm/}
+        <link rel="stylesheet" href="{ms:globalskin.url/}/css/slide.css">
+        <script src="{ms:globalskin.url/}/js/slider.js"></script>
+    </head>
+    <style>
+        .nav .nav_category_list .nav_list_item .nav_category_children { 
+            right:192px; 
+        }
+        .nav .nav_category_list .nav_list_item .nav_category_children
+        .line { 
+            height: 49px; 
+            top: 0px; 
+            left: 266px; 
+        }
+        /*自动换行*/
+        .autoWrap{ 
+            word-break:break-word; 
+        } 
+        .nav .allthem{ 
+            border-left:3px solid #0098FE; 
+            padding-left:28px;
+        } 
+        .nav .allthem a{color: #0098FE;}
+        .mbbs-banner{
+            height: 244px;
+            margin-bottom: 10px;
+            width: 907px
+        }
+        .slides{
+            background: url(http://cdn.mingsoft.net/global/images/loading.gif) no-repeat center #fff;
+            width: 906px;
+            height: 244px;
+            border: 1px #ddd solid;
+        }
+        .flexslider .slides li{
+             height:245px;
+        }
+    </style>
+    <body>
+        {ms:include filename=head.htm/}
+        <div class="container_wrap wrap_990 clearfix">
+            {ms:include filename=mbbs/left.htm/}
+            <div class="contain_right clearfix">
+                <div class="mbbs-banner flexslider" id="banner_tabs">
+                    <!--幻灯开始-->
+                    <ul class="slides">   
+                        {ms:arclist size=5 flag=置顶}                     
+                        <li style="background:url([field.litpic/]) no-repeat center;"><a href="[field.link/]" target="_blank" style="display: block;width: 100%;height: 100%;"></a></li>          
+                        {/ms:arclist}       
+                    </ul>
+                    <!--幻灯结束-->
+                </div>
+                <div class="theme" style="margin-bottom: 10px;">
+                    <div class="theme_con">
+                        <div class="theme_nav">
+                            <a class="theme_nav_list">编辑推荐</a>
+                        </div>
+                        <ul>
+                            {ms:arclist size=10 flag=推荐}
+                            <li class="index-toplist"><img class="user_head" src="[field.author.icon/]" onerror="this.src='http://cdn.mingsoft.net/global/images/msheader.png' "><a href="[field.link/]" class="title_name ms-text-hide" id="a[field.id/]" target="_blank">[field.title/]</a></li>
+                            {/ms:arclist}
+                        </ul>
+                    </div>
+                </div>
+                <div class="theme">
+                    <div class="theme_con">
+                        <div class="theme_nav">
+                            <a href="{ms:global.host/}/mbbs/main.do" class="theme_nav_list theme_nav_listOther">最新贴子</a>
+                            <a class="btn theme_nav_btn btn-primary" style="width: 120px;">发 帖</a>
+                        </div>
+                        <div class="theme_list_noData clearfix">该主题暂无帖子</div>
+
+                        <form class="subject_check">
+                            <input type="hidden" name="categoryId" value="{ms:field.typeid/}" />
+                            <ul class="theme_con_index themelistcon clearfix ">
+                                {ms:arclist size=30 ispaging=true}
+                                <li class="theme_list clearfix">
+                                    <div class="theme_list_con">
+                                        <div class="theme_list_img">
+                                            <a href="[field.link/]" class="headportrait" id="icon[field.id/]" target="_blank">
+                                                <img class="user_head" src="[field.author.icon/]">
+                                            </a>
+                                        </div>
+                                        <span class="title">
+                                            <a href="[field.link/]" class="title_name " id="a[field.id/]" target="_blank">
+                                                [field.title/]
+                                            </a>
+                                            <div class="subjectType">
+                                            </div>
+                                        </span>
+                                        <a href="[field.link/]" class="user_name" target="_blank">
+                                            [field.author.name/]
+                                        </a>
+                                        <span class="vipnum vipnum_1">
+                                        </span>
+                                        <span class="time txt">
+                                            发布时间： [field.date fmt=yyyy年MM月dd日 HH:mm:ss/]
+                                        </span>
+                                        <script type="text/javascript">
+                                            $(function() {
+                                                
+                                                //用户头像
+                                                var icon = "[field.author.icon/]";
+                                                if (icon == "<!--未找到该标签内容-->") {
+                                                    $("#icon[field.id/]").html("<img class='user_head' src='http://cdn.mingsoft.net/global/images/msheader.png'> ");
+                                                }
+                                            });
+                                        </script>
+                                        <div class="auth_msg clearfix">
+                                            <!--<a href="[field.typelink/]" class="time txt"> 发布于&nbsp; [field.typetitle/]</a> 
+                                            <span class="comefrom txt">·最后评论时间&nbsp;[field.date.comment.last fmt=yyyy-MM-dd HH:mm:ss/]</span>  -->
+                                            <span class="numb msg"><i></i>[field.total.comment/]</span>
+                                            <span class="numb view"><i></i>[field.hit/]</span>
+                                        </div>
+                                    </div>
+                                </li>
+                                {/ms:arclist}
+                            </ul>
+                        </form>
+                        <!--分页-->
+                        {ms:include filename=mbbs/page.htm/}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {ms:include filename=footer.htm/}
+        <script>
+            var _hmt = _hmt || []; (function() {
+                var hm = document.createElement("script");
+                hm.src = "//hm.baidu.com/hm.js?c7dd60319cfb58871ce21c1221b9bdc3";
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+       
+    </body>
+
+</html>
+<script type="text/javascript">
+    var CurrPage = {ms:page.cur/};
+    $(function() {
+        if ($.trim($(".theme_con_index").html()) == "<!--未找到该标签内容-->") {
+            $(".theme_con .theme_list_noData").show();
+            $(".paging_widget_2").hide();
+        }
+        $(".theme_nav .theme_nav_list").css("background", "rgb(243, 243, 243)");
+    });
+</script>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>{ms:global.name/}-优站精选</title>
+    {ms:include filename=header.htm/}
+</head>
+<style>
+   .post-title a{padding:0px;font-size:20px;}
+   footer{background: #4A4849;height:auto;}
+   .jumbotron p {font-size: 24px;
+    font-weight: 300;
+    line-height: 1.25;}
+    .subhead h1 {
+        font-size: 60px;
+        font-weight: normal;
+        line-height: 1;
+    }
+    .erCode{
+      position: absolute;
+      z-index: 10;
+      left:0px;
+      display:none;
+      bottom: 58px;
+      width: 555px;
+      height: 213px;
+      background-color: rgba(255, 255, 255, 0.7);
+  }
+  .erCode img{
+      width:213px;
+      height:213px;
+      margin: 0px auto;
+  }
+  .post{margin-top:33px;}
+</style>
+<body class="home-template">
+	{ms:include filename=head.htm/}
+    <header class="jumbotron subhead" id="overview">
+        <div class="container">
+          <h1>优站精选</h1>
+          <p class="lead">坚持分享、开放的互联网精神</p>
+      </div>
+  </header>
+  <main  role="main">
+    <div class="container">
+        <div class="row" id="post-list">
+          {ms:arclist size=6  orderby=date  ispaging=true}
+          <div class="col-xs-12 col-md-6 col-lg-6">
+            <article class="post tag-guo-wai-wang-zhan tag-bootstrap-v3">
+                <section class="post-featured-image">
+
+                    <a class="thumbnail" href="[field.descrip/]" target="_blank">
+                      <img src="[field.litpic/]" width="800" style="height:430px;" alt="[field.title/]" data-original="[field.litpic/]"">
+                  </a>
+                  <span class="国外网站 Bootstrap v3"></span>
+              </section>
+              <header class="post-header">
+               <div class="erCode"><img src="[cfield.erCode/]"/></div>
+               <h2 class="post-title padding0"><a href="[field.descrip/]" target="_blank" style="padding:0px;"> [field.title/]</a></h2>
+           </header>
+       </article>
+   </div>
+   {/ms:arclist}
+</div>
+<nav class="pagination">
+    <a class="older-posts" href="{ms:page.pre/}" style="right:104px;">← 上一页</a>
+    <span class="page-number">第{ms:page.cur/}页/共 {ms:page.total/} 页</span>
+    <a class="older-posts" href="{ms:page.next/}">下一页 &rarr;</a>
+</nav>
+</div>
+</main>
+
+</div>
+
+{ms:include filename=footer.htm/}
+<script>
+    $(".post-header .erCode").each(function(index){
+        var srcValue = $(this).find("img").attr("src");
+
+        if(srcValue.indexOf("|")>0){
+            srcValue = srcValue.substring(0,srcValue.indexOf("|"));
+        }
+        if(srcValue=="<!--未找到该标签内容-->"){
+            $(this).remove()
+            return;
+        }else{
+            $(this).find("img").attr("src",srcValue);
+        }
+        index++;
+    });
+    $(function(){
+        $(".post-header").hover(function(){
+            $(this).find(".erCode").slideDown("slow");
+        },function(){
+            $(this).find(".erCode").slideUp("slow");
+        });
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xml:lang="zh-CN">
+<head>
+	<title>正在整理更新中 - 铭飞官方MS论坛</title>
+    <script src="http://static.ming-soft.com/plugins/jquery/1.9.1/jquery-1.9.1.js"></script>
+	<script src="http://static.ming-soft.com/plugins/seajs/3.0.0/sea.js"></script>
+    <script src="http://static.ming-soft.com/model/1.0.0/main.js"></script>
+</head>
+<script>ms.config({base:"{ms:global.host/}"});</script>
+<body>
+	<p>账号<input type="text" name="userName" class="userName" /></p>
+	<p>密码<input type="text" name="passWord" class="passWord" /></p>
+    <p>验证码<input type="text" id="testCode"/></p>
+    <img id="code_img" style="width:80px; height:24px;">
+    <button type="submit" id="testLogin">登录</button>
+    <button type="submit" id="testRegister">注册</button>
+	<script type="text/javascript">
+		$(function(){
+			ms.load(["ms"], function(ms) {
+				ms.code("code_img");
+				$("#code_img").click(function(){
+					ms.code("code_img");
+				});
+			})
+		})
+		ms.load(["ms","ms.people"], function(ms,people) {
+			$("#testRegister").click(function() {
+				var code = $("#testCode").val();
+				var name = $(".userName").val();
+				var passWord = $(".passWord").val();
+				people.check("peopleName="+name,function(json) {
+					if(!json.result){
+						people.register("rand_code="+code+"&peopleName="+name+"&peoplePassword="+passWord,function(json) {
+							if (json.result) {
+		                        ms.alert("注册成功");
+		                    }else{
+		                    	ms.alert("注册失败");
+		                    }
+						});
+					}else{
+						ms.alert("该用户已存在")
+					}
+				});
+					
+			});
+			$("#testLogin").click(function() {
+				var code = $("#testCode").val();
+				var name = $(".userName").val();
+				var passWord = $(".passWord").val();
+				people.checkLogin("rand_code="+code+"&peopleName="+name+"&peoplePassword="+passWord,function(json){
+					alert(json.result)
+                	if (!json.result) {
+                		people.checkLoginStatus(function(json){
+			            	alert(json.result);
+			            })
+                	}
+                })
+
+			})
+		})
+	</script>
+</body>
+</html>
+<script>
+$(function() {
+    //加载详情页图片
+
+    getImageList("{ms:field.title/}", "{ms:cfield.images/}");
+});
+
+function getImageList(title, litpicList) {
+	var html = '';
+	//用“|”分割图片
+	var images = new Array(); //定义一数组 
+	images = litpicList.split("|"); //字符分割 
+	for (var i = 0; i < images.length; i++) {
+		if (images[i] != "" && i != 0) {
+			$("#thumb_list").append('<img title="' + title + '" src="' + images[i] + '"/>');
+			$(".ulBigPic").append('<img  src="' + images[i] + '"/>');
+		}
+	}
+}
+</script>

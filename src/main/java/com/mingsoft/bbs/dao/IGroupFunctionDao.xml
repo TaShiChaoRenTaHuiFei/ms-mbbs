@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mingsoft.bbs.dao.IGroupFunctionDao">
+
+	
+	
+	<resultMap id="resultMap" type="com.mingsoft.bbs.entity.GroupFunctionEntity">
+		<id column="gf_function_id" property="groupFunctionFunctionId" />							
+		<result column="gf_group_id" property="groupFunctionGroupId" />				
+		<result column="gf_forum_Id" property="groupFunctionForumId" />	
+		
+	</resultMap>
+	
+	<!-- 批量新增开始 -->
+	<insert id="saveBatch" parameterType="java.util.List">
+		insert into mbbs_group_function (gf_function_id,gf_group_id,gf_forum_Id) 
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.groupFunctionFunctionId},#{item.groupFunctionGroupId},#{item.groupFunctionForumId})
+		</foreach>
+	</insert>
+	
+	
+	<delete id="deleteByForumIdAndGroupId" parameterType="int">
+		delete from mbbs_group_function 
+		<where>
+			 gf_forum_Id=#{forumId} and gf_group_id=#{groupId}
+		</where>
+	</delete>
+	
+	<!--根据版块id获取功能列表开始-->
+	<select id="queryByForumIdOrGroupId" resultMap="resultMap">
+		select * from mbbs_group_function
+		<where>
+			<if test="forumId!=null">
+				and  gf_forum_Id=#{forumId}
+			</if>
+			<if test="groupId!=null">
+			 	and  gf_group_id=#{groupId}
+			</if>
+		</where>
+	</select>
+	<!-- 根据版块id获取功能列表结束 -->
+	
+	
+
+	
+
+	<!--根据版主类型以及板块id和功能id查询版主与功能关联实体开始-->
+	<select id="getByFunctionIdAndGroupId" resultMap="resultMap">
+		select * from mbbs_group_function
+		<where>
+			 gf_group_id=#{groupId}
+			 and gf_forum_Id=#{forumId}
+			 and gf_function_id=#{functionId}
+		</where>
+	</select>
+	<!-- 根据版主类型以及板块id和功能id查询版主与功能关联实体结束 -->
+	
+	
+	
+	<!--根据版主类型以及板块id和功能方法名查询版主与功能关联实体开始-->
+	<select id="getByFunctionMethodAndGroupId" resultMap="resultMap">
+		select * from mbbs_group_function
+		left join mbbs_function on mbbs_function.function_id =mbbs_group_function.gf_function_id
+		<where>
+			 gf_group_id=#{groupId}
+			 and gf_forum_Id=#{forumId}
+			 and function_method=#{functionMethod}
+		</where>
+	</select>
+	<!-- 根据版主类型以及板块id和功能方法名查询版主与功能关联实体结束 -->
+	
+	
+	<!--根据版块id获取功能列表开始-->
+	<select id="queryByForumIdAndFunctionMethod" resultMap="resultMap">
+		select * from mbbs_group_function
+		left join mbbs_function on mbbs_function.function_id =mbbs_group_function.gf_function_id
+		<where>
+			 gf_forum_Id=#{forumId}
+			 and function_method=#{functionMethod}
+		</where>
+	</select>
+	<!-- 根据版块id获取功能列表结束 -->
+	
+	<delete id="deleteByGroupIdAndForumId" parameterType="int">
+		delete from mbbs_group_function 
+		<where>
+			 gf_forum_Id=#{forumId}
+			 and gf_group_id=#{groupId}
+		</where>
+	</delete>
+</mapper>	

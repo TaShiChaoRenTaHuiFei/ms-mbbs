@@ -1,0 +1,23 @@
+<div class="base_widget_paging">
+    <div class="paging_widget_2">
+        <ul>
+            <!--<li class="next"> <a href="{ms:page.index/}">首页</a> </li>-->
+            <li class="next">
+                <a href="{ms:page.pre/}">&lt; 上一页</a>
+            </li>
+            <li class="next">
+                <a href="{ms:page.next/}">下一页 &gt;</a>
+            </li>
+            <!--<li class="next"> <a href="{ms:page.last/}">末页</a> </li>-->
+            <li class="next">
+                <span class="ui-paging-bold">{ms:page.cur/}/{ms:page.total/}</span>页
+            </li>
+            <li class="next">
+                <span class="ui-paging-info" style="color: #8c8c8c;">到第<input name="jump" type="text" style="margin: 0 5px; width:45px;height:20px; line-height: 18px;text-align: center;">页</span>
+            </li>
+            <li class="next" id="jump" data-page-count="{ms:page.total/}">
+                <a hred="#" class="btn_sure">确定</a>
+            </li>
+        </ul>
+    </div>
+</div>

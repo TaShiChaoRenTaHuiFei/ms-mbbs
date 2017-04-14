@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 管理员持久化层XML配置继承IRoleDao -->
+<mapper namespace="com.mingsoft.bbs.dao.IPeopleScoreLogDao">
+	
+	
+	<!-- 将实体属性与表字段对接开始 -->
+	<resultMap id="resultMap" type="com.mingsoft.bbs.entity.PeopleScoreLogEntity">
+		
+		<result column="PSL_LOG_ID" property="peopleScoreLogId"/> <!-- 用户积分变更自增长id -->
+		<result column="PSL_PEOPLE_ID" property="peopleScoreLogPeopleId"/><!-- 用户积分变更关联的用户id -->
+		<result column="PSL_FORUM_ID" property="peopleScoreLogForumId"/><!-- 用户变更操作的板块id-->
+		<result property="PSL_FUNCTION_ID" column="peopleScoreLogFunctionId" /><!-- 用户变更对应的功能id -->
+		<result property="PSL_BS_ID" column="peopleScoreLogBankScoreId" /><!--用户变更对应的积分类型 -->
+		<result property="PSL_SCORE_NUM" column="peopleScoreLogScoreNum" /><!-- 用户变更对应的积分数量-->
+		<result property="PSL_TIME" column="peopleScoreTime" /><!--  用户变更的时间 -->
+	</resultMap>
+	<!-- 将实体属性与表字段对接结束 -->
+	
+	
+	
+	<!-- 批量新增开始 -->
+	<insert id="saveBatch" parameterType="java.util.List">
+		insert into mbbs_people_score_log (PSL_PEOPLE_ID,PSL_FORUM_ID,PSL_FUNCTION_ID,PSL_BS_ID,PSL_SCORE_NUM,PSL_TIME) 
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.peopleScoreLogPeopleId},#{item.peopleScoreLogForumId},#{item.peopleScoreLogFunctionId},#{item.peopleScoreLogBankScoreId},#{item.peopleScoreLogScoreNum},#{item.peopleScoreTime})
+		</foreach>
+	</insert>
+
+	
+	<!-- 新增用户积分变更日志开始 -->
+	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="peopleScoreLogId" parameterType="com.mingsoft.base.entity.BaseEntity">
+		insert into mbbs_people_score_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="peopleScoreLogPeopleId gt 0">PSL_PEOPLE_ID,</if>
+			<if test="peopleScoreLogForumId != null">PSL_FORUM_ID,</if>
+			<if test="peopleScoreLogFunctionId != null">PSL_FUNCTION_ID,</if>
+			<if test="peopleScoreLogBankScoreId != null">PSL_BS_ID,</if>
+			<if test="peopleScoreLogScoreNum != null">PSL_SCORE_NUM,</if>
+			<if test="peopleScoreTime != null">PSL_TIME,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="peopleScoreLogPeopleId gt 0">#{peopleScoreLogPeopleId},</if>
+			<if test="peopleScoreLogForumId != null">#{peopleScoreLogForumId},</if>
+			<if test="peopleScoreLogFunctionId != null">#{peopleScoreLogFunctionId},</if>
+			<if test="peopleScoreLogBankScoreId">#{peopleScoreLogBankScoreId},</if>
+			<if test="peopleScoreLogScoreNum != null">#{peopleScoreLogScoreNum},</if>
+			<if test="peopleScoreTime != null">#{peopleScoreTime},</if>
+		</trim>
+	</insert>
+	<!-- 新增用户积分变更日志结束 -->
+	
+	<!-- 查询用户id 查询积分变更日志开始 -->
+	<select id="queryByPeopleId" resultMap="resultMap" parameterType="int">
+		select PSL_PEOPLE_ID,PSL_FORUM_ID,PSL_FUNCTION_ID,PSL_BS_ID,PSL_SCORE_NUM,PSL_TIME
+			from mbbs_people_score_log
+			where PSL_PEOPLE_ID = #{peopleScoreLogPeopleId}
+	</select>
+	<!-- 查询用户id 查询积分变更日志结束 -->
+	
+	<!-- 查询用户id 查询积分变更日志开始 -->
+	<select id="getEntity" resultMap="resultMap" parameterType="int">
+		select *
+			from mbbs_people_score_log
+			where PSL_LOG_ID = #{peopleScoreLogId}
+	</select>
+	<!-- 查询用户id 查询积分变更日志结束 -->
+	
+	
+	<!-- 用户各积分类型积分情况 -->
+	<resultMap id="peopleScoreMap" type="com.mingsoft.bbs.bean.PeopleScoreBean">
+		<id column="PSL_BS_ID" property="peopleScoreBankScoreId" />	
+		<result property="peopleScoreBankScoreTitle" column="bs_type_title" /><!--用户变更对应的积分类型 名称-->
+		<result property="peopleScoreTotalScore" column="totalScore" /><!-- 用户变更对应的积分数量-->
+		<result property="peopleScoreUsedScore" column="usedScore" /><!--  用户变更的时间 -->
+	</resultMap>
+	<!--  用户各积分类型积分情况  -->
+	
+	
+	<!-- 根据用户id查询用户每种积分类型对应的变更记录开始 -->
+	<select id="queryByPeopleIdGroupByScoreTypeId" resultMap="peopleScoreMap" parameterType="int">
+		select PSL_BS_ID,bs_type_title,PSL_PEOPLE_ID,
+		func_count_people_score(1,PSL_BS_ID,#{peopleScoreLogPeopleId})  totalScore,func_count_people_score(0,PSL_BS_ID,#{peopleScoreLogPeopleId}) usedScore
+			from mbbs_people_score_log
+			LEFT JOIN bank_score on PSL_BS_ID=bs_id
+			where PSL_PEOPLE_ID = #{peopleScoreLogPeopleId}
+		group by PSL_BS_ID
+		ORDER BY PSL_BS_ID DESC
+	</select>
+	<!-- 根据用户id查询用户每种积分类型对应的变更记录结束 -->
+</mapper>

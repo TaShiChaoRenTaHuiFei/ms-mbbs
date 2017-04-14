@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 管理员持久化层XML配置继承IRoleDao -->
+<mapper namespace="com.mingsoft.bbs.dao.IPeopleGroupScoreDao">
+	
+	
+	<!-- 将实体属性与表字段对接开始 -->
+	<resultMap id="resultMap" type="com.mingsoft.bbs.entity.PeopleGroupScoreEntity">
+		<result column="pgs_group_id" property="peopleGroupScoreGroupId"/> <!-- 用户组id -->
+		<result column="pgs_min_score" property="peopleGroupScoreMinScore"/><!-- 用户组最小积分范围 -->
+		<result column="pgs_max_score" property="peopleGroupScoreMaxScore"/><!-- 用户组最大积分范围-->
+		<result column="pgs_bs_id" property="peopleGroupScoreBankScoreId"/><!-- 用户组积分范围对于的积分类型-->
+	</resultMap>
+	<!-- 将实体属性与表字段对接结束 -->
+	
+	
+	<!-- 批量新增开始 -->
+	<insert id="saveBatch" parameterType="java.util.List">
+		insert into mbbs_people_group_score (pgs_group_id,pgs_min_score,pgs_max_score,pgs_bs_id) 
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.peopleGroupScoreGroupId},#{item.peopleGroupScoreMinScore},#{item.peopleGroupScoreMaxScore},#{item.peopleGroupScoreBankScoreId})
+		</foreach>
+	</insert>
+
+	
+	<!-- 新增用户分类开始 -->
+	<insert id="saveEntity" useGeneratedKeys="true" keyProperty="peopleGroupId" parameterType="com.mingsoft.base.entity.BaseEntity">
+		insert into mbbs_people_group_score
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="peopleGroupScoreId gt 0">pgs_group_id,</if>
+			<if test="peopleGroupScoreMinScore != null">pgs_min_score,</if>
+			<if test="peopleGroupScoreMaxScore != null">pgs_max_score,</if>
+			<if test="peopleGroupScoreBankScoreId != null">pgs_bs_id,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="peopleGroupScoreGroupId gt 0">#{peopleGroupScoreGroupId},</if>
+			<if test="peopleGroupScoreMinScore != null">#{peopleGroupScoreMinScore},</if>
+			<if test="peopleGroupScoreMaxScore != null">#{peopleGroupScoreMaxScore},</if>
+			<if test="peopleGroupScoreBankScoreId != null">#{peopleGroupScoreBankScoreId},</if>
+		</trim>
+	</insert>
+	<!-- 新增用户分类结束 -->
+	
+	<!-- 查询用户分类开始 -->
+	<select id="queryByPeopleGroupId" resultMap="resultMap" parameterType="int">
+		select pgs_group_id,pgs_min_score,pgs_max_score,pgs_bs_id,CATEGORY_TITLE,CATEGORY_SMALLIMG
+			from mbbs_people_group_score left join category on pgs_group_id=CATEGORY_ID
+			where
+			pgs_group_id = #{peopleGroupId}
+			
+	</select>
+	<!-- 查询用户分类结束 -->
+	
+	
+	
+	
+	
+	<!-- 删除用户分类开始 -->
+	<delete id="deleteEntity" parameterType="int">
+		delete from mbbs_people_group_score where pgs_group_id = #{peopleGroupId}
+	</delete>
+	<!-- 删除用户分类结束 -->
+	
+	<!-- 删除用户分类开始 -->
+	<delete id="deleteByGroupId" parameterType="int">
+		delete from mbbs_people_group_score
+		where pgs_group_id = #{groupId}
+		
+	</delete>
+	<!-- 删除用户分类结束 -->
+	
+	
+	
+</mapper>

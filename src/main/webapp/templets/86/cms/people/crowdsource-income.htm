@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>{ms:global.name/}-我的众包收益</title>
+    {ms:include filename=header.htm/}
+    {ms:include filename=people/header.htm/}
+    
+</head>
+
+<body>
+    {ms:include filename=head.htm/}
+    
+    <div class="user_center">
+        <!--公用左边菜单部分开始-->
+        {ms:include filename=people/menu.htm/}
+        <!--公用左边菜单部分结束-->
+        
+        <div class="user_centent">
+            <!--个人中心内容部分头部固定数据-->
+            {ms:include filename=people/data.htm/}
+            
+
+            <!--更新提示-->
+            <div class="user_cententbody">
+                <!--我的收益订单-->
+                <div class="user_cententbodynav">我的众包收益</div>
+                <div class="alert alert-info listNone hide-default" role="alert">
+                    <p>很遗憾！您暂时还没参加过平台众包项目，所以您只有 0 RMB</p>
+                    <p>温馨提示：相信高手都在人间，团结程序猿们的力量，想参加众包请关注开发者社区的众包板块。</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    
+    {ms:include filename=footer.htm/}
+</html>
+<script>
+    $(function(){
+        $(".listNone").fadeIn();
+    })
+</script>

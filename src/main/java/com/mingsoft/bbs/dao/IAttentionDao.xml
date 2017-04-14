@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mingsoft.bbs.dao.IAttentionDao">
+
+	<sql id="column_list">
+		BASIC_ID,BASIC_TITLE,BASIC_DESCRIPTION,
+		BASIC_THUMBNAILS,BASIC_HIT,BASIC_DATETIME,
+		BASIC_UPDATETIME,BASIC_PEOPLEID,BASIC_CATEGORYID,
+		BASIC_APPID,BASIC_MODELID,
+		
+		ba_id,ba_peopleID,
+		ba_appID,ba_basicID,ba_type,ba_datetime,
+		
+		SUBJECT_BASIC_ID,SUBJECT_DISPLAY,CATEGORY_ID,
+		CATEGORY_TITLE,totalComment,lastCommentTime
+	</sql>
+
+	<!--关注帖子列表的返回值 -->
+	<resultMap id="resultMap" type="com.mingsoft.bbs.bean.AttentionBean">
+	
+		<id column="BASIC_ID" property="basicId" />							<!-- 帖子自增长id -->
+		<result column="BASIC_TITLE" property="basicTitle" />				<!-- 帖子标题 -->
+		<result column="BASIC_HIT" property="basicHit" />					<!-- 帖子点击量 -->
+		<result column="BASIC_DESCRIPTION" property="basicDescription" />	<!-- 帖子描述 -->
+		<result column="BASIC_THUMBNAILS" property="basicThumbnails" />		<!-- 帖子缩略图 -->
+		<result column="BASIC_UPDATETIME" property="basicUpdateTime" />		<!-- 帖子更新时间 -->
+		<result column="BASIC_DATETIME" property="basicDateTime" />			<!-- 帖子发布时间 -->
+		<result column="BASIC_APPID" property="basicAppId" />				<!-- 帖子的应用id -->
+		<result column="BASIC_CATEGORYID" property="basicCategoryId" />		<!-- 帖子的栏目id -->
+		<result column="BASIC_PEOPLEID" property="basicPeopleId" />			<!-- 帖子的作者id -->
+		
+		<result column="BA_ID" property="basicAttentionId" />				<!-- 关注的自增长ID -->
+		<result column="BA_PEOPLEID" property="basicAttentionPeopleId" />	<!-- 创建关注的用户Id -->
+		<result column="BA_TYPE" property="basicAttentionType" />			<!-- 关注的类型，1、收藏，2，顶 -->
+		<result column="BA_DATETIME" property="basicAttentionTime" />		<!-- 关注的创建时间 -->
+
+		<result column="SUBJECT_DISPLAY" property="subjectDisplay" />		<!-- 帖子属性(是否显示) -->
+		<result column="CATEGORY_ID" property="categoryId" />				<!-- 帖子关联的版块id -->
+		<result column="CATEGORY_TITLE" property="categoryTitle" />			<!-- 所属板块名称 -->
+		<result column="totalComment" property="totalComment" />			<!-- 帖子今日的评论总数 -->
+		<result column="lastCommentTime" property="lastCommentTime" />		<!-- 帖子最后的评论时间 -->
+	</resultMap>
+
+	<!-- 根据站点id，用户id，关注类型id，以及模块id查找bbs模块下用户关注的帖子列表 -->
+	<select id="queryPageAndSbujectByPeopleIdAndAppId" resultMap="resultMap">
+		select 
+				<include refid="column_list" />
+		from
+				v_attention_subject
+			
+		<where>
+			<if test="peopleId != null">and ba_peopleid=#{peopleId}</if>
+			<if test="appId != null">and ba_appid=#{appId}</if>
+			<if test="attentionType != null">and ba_type=#{attentionType}</if>
+		</where>
+		order by ba_id desc
+		<if test="page != null">
+			limit ${page.pageNo*page.pageSize},#{page.pageSize};
+		</if>
+	</select>
+	
+	<select id="countByPeople" resultType="int">
+		select count(*) from basic_attention ba
+		left join basic b on
+		ba.ba_basicid = b.basic_id
+		where 1=1
+		<if test="peopleId != null">and ba.ba_peopleid=#{peopleId}</if>
+		<if test="appId != null">and ba.ba_appid=#{appId}</if>
+		<if test="attentionType != null">and ba.ba_type=#{attentionType}</if>
+		<if test="modelId != null">and b.basic_modelid=#{modelId}</if>
+	</select>
+	<!-- 根据用户ID和APPID查询用户关注内容列表结束 -->
+
+</mapper>	

@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+input:-webkit-autofill{
+    box-shadow: 0 0 0 60px #fff inset;
+    outline: none;
+}
+#footer, #menu{  min-width: 1200px;width: 100%;}
+/*头部登录样式*/
+.login-tips{
+    width: 50px;
+    height: 46px;
+    background: url(../images/login.png) no-repeat -2px 13px;
+    float: right;
+    margin: 7px 0;
+    color: white;
+    line-height: 46px;
+    text-align: right;
+}
+.hide-default{
+    display: none;
+}
+#commentCode,#postCode{
+    cursor: pointer;
+}
+.user-name{
+    margin-right: 20px;
+}
+.header-nav {
+    margin: 0px auto;
+    width: 1170px;
+}
+#login_container{
+    text-align: center;
+}
+
+.topbar-info {
+    height: 46px;
+    float: right;
+    margin: 7px 0;
+    color: white;
+    line-height: 46px;
+    text-align: right;
+}
+.topbar-info a .loginImg{
+    width: 30px;    
+    border-radius: 50%;
+}
+.topbar-info a.userName{
+    margin-right: 20px;
+    color: #fff;
+}
+.topbar-info a.quitLogin{
+    color: #fff;
+}
+//弹窗样式
+.modal-backdrop{width: 100%;  opacity: .2;position: fixed !important;_position: absolute;top: 0;right: 0;bottom: 0; left: 0;z-index: 1040;background-color: #000;}
+.alert_body{width: 390px; height: 180px;background-color:#fff;position:fixed !important;z-index: 10000;top:40%;left:37%;}
+.alert_body .alert_title{height: 14px;width: 90%;padding: 27px;}
+.alert_body .alert_content{height: 84px;width:100%;text-align: center;}
+.alert_body .alert_button{height: 42px;width:100%;}
+.alert_body .alert_button .alert_cancel{  cursor: pointer;width:50%; text-align: center;height: 41px;border-top: 1px #dcdcdc solid;float: left;line-height: 42px;color:#333}
+.alert_body .alert_button .alert_cancel:hover{background-color: #f3f3f3}
+.alert_body .alert_button .alert_sure{  cursor: pointer;width:50%; height:100%;text-align: center;float: left;line-height: 42px;background: #E6240F;color: #fff;}
+.alert_body .alert_button .alert_sure:hover,.alert_body .alert_button .alert_onlySure:hover{background-color: #cb0312}
+.alert_body .alert_button .alert_onlySure{  cursor: pointer;width:100%;height: 100%;text-align: center;float: left;line-height: 42px;background: #E6240F;color: #fff;}

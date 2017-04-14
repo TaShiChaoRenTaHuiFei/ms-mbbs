@@ -1,0 +1,152 @@
+        <div class="contain_left">
+
+            <!-- 首页侧边栏导航版块列表 -->
+            <div class="left_wrap">
+                <div class="slide">
+                    <div class="nav">
+                        <div class="allthem"> 
+                            <a href="{ms:global.host/}/mbbs/main.do">
+                                <span>全部主题</span>
+                                <span class="num"></span>
+                            </a> 
+                        </div>
+                        <ul class="nav-block">
+                        	{ms:channel type=top}
+                            <li>
+                                <a href="[field.typelink/]?channeid=[field.channelid/]" class="nav_list_con">
+                                    <span class="txt">[field.typetitle/]</span>
+                                    <span class="num"></span> 
+                                </a>                            
+                            </li>
+                            {/ms:channel}                                                                                                
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 首页侧边栏导航版块列表end -->
+            <a class="btn theme_nav_btn btn-primary" style="width: 251px;margin-bottom: 10px;">发 帖</a>
+            <!--左侧搜索框-->
+            <!--div class="left_wrap">
+                <form id="searchDataForm">
+                    <div class="input-group">
+                        <input type="text" name="basic_title" class="form-control" placeholder="搜索贴子" style="border-radius: 0px;border: 1px solid #e6e6e6;">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" style="border-radius: 0px;border: 1px solid #e6e6e6;"><i style="font-size:12px;" class="icon iconfont">&#xe70d;</i></button>
+                        </span>
+                    </div>
+                </form>
+            </div-->
+
+            <!--下载排行-->
+            <div class="left_wrap">
+                <div class="con left-data">
+                	<div class="hotspot">
+			            <h3>Mstore下载排行</h3>
+			            <ul class="announcement clearfix hide-default" id="topdown-list">	
+                            <!--li class="shareActive_txt">
+                                <span class="light">1</span>
+                                <a class="ms-text-hide" href="http://ms.mingsoft.net/mbbs/13000/detail.do">MCms环境配置常见问题</a>
+                            </li--> 
+                            <script type="text/x-jquery-tmpl" id="downloadTop">
+
+                            <li class="shareActive_txt">
+                                <span>1</span>
+                                <a class="ms-text-hide">${upgraderVersionName}</a>
+                            </li>
+                            </script>     
+			            </ul>
+		          	</div>
+		        </div>
+            </div>
+
+
+            <!--赞助者-->
+            <div class="left_wrap">
+                <div class="con left-data">
+                    <div class="hotspot">
+                        <h3>赞助者</h3>
+                        <ul class="announcement clearfix hide-default" id="support-list">  
+
+                            <script type="text/x-jquery-tmpl" id="supportTop">
+                            {{if upgraderOrderPublishPeopleIcon == null || upgraderOrderPublishPeopleIcon == ""}}
+                            <li class="support">
+                                <img class="support_head" src="http://cdn.mingsoft.net/global/images/msheader.png">
+                                <p>${upgraderOrderPeopleNickName}</p>
+                            </li>
+                            {{else}}
+                                {{if upgraderOrderPublishPeopleIcon.substr(0,7) == "http://"}}
+                                <li class="support">
+                                    <img class="support_head" src="${upgraderOrderPublishPeopleIcon}">
+                                    <p>${upgraderOrderPeopleNickName}</p>
+                                </li>
+                                {{else}}
+                                <li class="support">
+                                    <img class="support_head" src="http://ms.mingsoft.net${upgraderOrderPublishPeopleIcon}">
+                                    <p>${upgraderOrderPeopleNickName}</p>
+                                </li>
+                                {{/if}}
+                            {{/if}}
+                            </script>  
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <!--分享者-->
+            <div class="left_wrap">
+                <div class="con left-data">
+                    <div class="hotspot">
+                        <h3>分享者</h3>
+                        <ul class="announcement clearfix hide-default" id="shareuser-list"> 
+                            <script type="text/x-jquery-tmpl" id="shareuserTop">
+                            {{if upgraderVersionPeopleIcon == null || upgraderVersionPeopleIcon == ""}}
+                            <li class="support">
+                                <img class="support_head" src="http://cdn.mingsoft.net/global/images/msheader.png">
+                                <p>${upgraderVersionPeopleName}</p>
+                            </li>
+                            {{else}}
+                                {{if upgraderVersionPeopleIcon.substr(0,7) == "http://"}}
+                                <li class="support">
+                                    <img class="support_head" src="${upgraderVersionPeopleIcon}">
+                                    <p>${upgraderVersionPeopleName}</p>
+                                </li>
+                                {{else}}
+                                <li class="support">
+                                    <img class="support_head" src="http://ms.mingsoft.net${upgraderVersionPeopleIcon}">
+                                    <p>${upgraderVersionPeopleName}</p>
+                                </li>
+                                {{/if}}
+                            
+                            {{/if}}
+                            </script>  
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function(){
+                ms.load(["ms","ms.upgrader"],function(ms,upgrader) {
+                    upgrader.people.topDown(function(data) {
+                        for (var i = 1;i < 9; i++) {
+                            //$("#downloadTop").tmpl(data).appendTo("#topdown-list");
+                            $("#topdown-list").append('<li class="shareActive_txt"><span>'+i+'</span><a class="ms-text-hide">'+data[i].upgraderVersionName+'</a></li>');
+                            if(i<4){
+                                $(".shareActive_txt span").addClass("light");
+                            }
+                        }
+                        $("#topdown-list").fadeIn();
+                    });
+                    upgrader.people.topSponsor(function(data) {
+                        $("#supportTop").tmpl(data).appendTo("#support-list");
+                        $("#support-list").fadeIn();
+                    });
+                    upgrader.people.topShareUser(function(data) {
+                        $("#shareuserTop").tmpl(data).appendTo("#shareuser-list");
+                        $("#shareuser-list").fadeIn();
+                    });
+                });
+            })
+        </script>

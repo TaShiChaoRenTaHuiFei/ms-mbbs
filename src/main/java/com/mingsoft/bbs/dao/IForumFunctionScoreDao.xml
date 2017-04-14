@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mingsoft.bbs.dao.IForumFunctionScoreDao">
+
+	
+	<!-- 字段与属性绑定开始 -->
+	<resultMap id="resultMap" type="com.mingsoft.bbs.entity.ForumFunctionScoreEntity">
+		<id column="ffs_forum_id" property="forumFunctionScoreForumId" />							
+		<result column="ffs_function_id" property="forumFunctionScoreFunctionId" />				
+		<result column="ffs_group_id" property="forumFunctionScoreGroupId" />	
+		<result column="ffs_bs_id" property="forumFunctionScoreBankScoreId" />
+		<result column="ffs_score_num" property="forumFunctionScoreScoreNum" />
+	</resultMap>
+	<!-- 字段与属性绑定结束 -->
+	
+	<!-- 批量新增开始 -->
+	<insert id="saveBatch" parameterType="java.util.List">
+		insert into mbbs_forum_function_score (ffs_forum_id,ffs_function_id,ffs_group_id,ffs_bs_id,ffs_score_num) 
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.forumFunctionScoreForumId},#{item.forumFunctionScoreFunctionId},#{item.forumFunctionScoreGroupId},#{item.forumFunctionScoreBankScoreId},#{item.forumFunctionScoreScoreNum})
+		</foreach>
+	</insert>
+	
+	<!--根据板块id，用户组id和功能id查询不同类型的积分的奖励规则开始-->
+	<select id="queryList" resultMap="resultMap">
+		select ffs_forum_id,ffs_function_id,ffs_group_id,ffs_bs_id,ffs_score_num
+		 from mbbs_forum_function_score
+		<where>
+			<if test="groupId!=null">and ffs_group_id=#{groupId}</if>
+			<if test="forumId!=null">and ffs_forum_id=#{forumId}</if>
+			<if test="functionId!=null">and ffs_function_id=#{functionId}</if>
+		</where>
+	</select>
+	<!-- 根据板块id，用户组id和功能id查询不同类型的积分的奖励规则结束 -->
+	
+	<!-- 根据用户分组id删除不同类型的积分的奖励规则开始 -->
+	<delete id="deleteByGroupId" parameterType="int">
+		delete from mbbs_forum_function_score 
+		where ffs_group_id=#{groupId}
+	</delete>
+	<!--根据用户分组id删除不同类型的积分的奖励规则结束 -->
+	
+
+</mapper>	

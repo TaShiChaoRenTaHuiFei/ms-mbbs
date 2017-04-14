@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xml:lang="zh-CN" lang="zh-CN">
+<head>
+    <title>{ms:field.typetitle/}-铭飞科技社区官方论坛</title>
+    {ms:include filename=header.htm/}
+    {ms:include filename=mbbs/header.htm/}
+<body>
+    <div class="main">
+        {ms:include filename=head.htm/}
+        <div class="container_wrap wrap_990 clearfix contain_plate">
+            <div class="contain_header">
+                <div class="wrap">
+                    <img src="" class="J_goodsBigPic">
+                </div>
+                <div class="contain_header_con">
+                    <div>
+                        <a href="#">
+                            <h2 f-id="418">
+                                {ms:field.typetitle/}
+                            </h2>
+                        </a>
+                        <span class="attentionl">
+                        </span>
+                        <span class="num">
+                        </span>
+                    </div>
+                    <div>
+                        <span class="intro">
+                            {ms:field.typedescrip/}
+                        </span>
+                    </div>
+                </div>
+                <a class="btn btn-primary theme_nav_btn">发表新主题</a>
+                <span class="gearedto" style="display:none;">
+                </span>
+            </div>
+            {ms:include filename=mbbs/left.htm/}
+            <div class="contain_right clearfix">
+                <div class="theme">
+                    <div class="theme_con">
+                        <div class="theme_nav">
+                            <a href="javascript:void(0);" class="theme_nav_list theme_nav_listOther"
+                            data-id="{ms:field.typeid/}">
+                                全部帖子
+                            </a>
+                            {ms:channel typeid={channeid/}}
+                                <a href="[field.typelink/]?channeid={channeid/}" class="theme_nav_list theme_nav_listOther">
+                               [field.typetitle/]
+                                </a>
+                            {/ms:channel}
+
+                        </div>
+                        <div class='theme_list_noData clearfix'>
+                            该版块暂无帖子
+                        </div>
+                        <form class="subject_check">
+                            <input type="hidden" name="categoryId" value="{ms:field.typeid/}" />
+                            <ul class="themelistcon clearfix">
+                                {ms:arclist size=30 ispaging=true}
+                                <li class="theme_list clearfix">
+                                    <div class="theme_list_con">
+                                        <div class="theme_list_img">
+                                            <a href="[field.link/]" class="headportrait" id="icon[field.id/]" target="_blank">
+                                                <img class="user_head" src="[field.author.icon/]">
+                                            </a>
+                                        </div>
+                                        <span class="title">
+                                            <a href="[field.link/]" class="title_name " id="a[field.id/]" target="_blank">
+                                                [field.title/]
+                                            </a>
+                                            <div class="subjectType">
+                                            </div>
+                                        </span>
+                                        <a href="[field.link/]" class="user_name" target="_blank">
+                                            [field.author.name/]
+                                        </a>
+                                        <span class="vipnum vipnum_1">
+                                        </span>
+                                        <span class="time txt">
+                                            发布时间： [field.date fmt=yyyy年MM月dd日 HH:mm:ss/]
+                                        </span>
+                                        <script type="text/javascript">
+                                            $(function() {
+                                                
+                                                //用户头像
+                                                var icon = "[field.author.icon/]";
+                                                if (icon == "<!--未找到该标签内容-->") {
+                                                    $("#icon[field.id/]").html("<img class='user_head' src='http://cdn.mingsoft.net/global/images/msheader.png'> ");
+                                                }
+                                            });
+                                        </script>
+                                        <div class="auth_msg clearfix">
+                                            <!--<a href="[field.typelink/]" class="time txt"> 发布于&nbsp; [field.typetitle/]</a> 
+                                            <span class="comefrom txt">·最后评论时间&nbsp;[field.date.comment.last fmt=yyyy-MM-dd HH:mm:ss/]</span>  -->
+                                            <span class="numb msg"><i></i>评论： [field.total.comment/]</span>
+                                            <span class="numb view"><i></i>点击： [field.hit/]</span>
+                                        </div>
+                                    </div>
+                                </li>
+                                {/ms:arclist}
+                            </ul>
+                        </form>
+                        <!--分页-->
+                        {ms:include filename=mbbs/page.htm/}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {ms:include filename=footer.htm/}
+</body>
+<form id="searchForm" action="/mbbs/14/searchSubject.do">
+    <input name="categoryId" type="hidden" value="">
+    <input name="pageNo" type="hidden" value="1">
+</form>
+<script>
+    var CurrCategoryId = {ms:field.typeid/};
+    $(function() {
+        //缩略图
+        var litpicList = "{ms:field.typeicon/}";
+        var html = '';
+        //用“|”分割图片
+        var images = new Array(); //定义一数组 
+        images = litpicList.split("|"); //字符分割 
+        for (var i = 0; i < images.length; i++) {
+            if (images[i] != "") {
+                $(".J_goodsBigPic").attr("src", images[i]);
+            }
+        }
+        var len = $(".subject_check li").length;
+        if (len < 1) {
+            $(".base_widget_paging").hide();
+        }
+
+    });
+</script>
+<script>
+    $(function() {
+        if($.trim($(".themelistcon").html()) == "<!--未找到该标签内容-->") {
+            $(".theme_list_noData ").show();
+            $(".paging_widget_2").hide();
+        }
+        $(".theme_nav a:first").css("background", "rgb(243, 243, 243)");
+        
+    });
+</script>
+</html>

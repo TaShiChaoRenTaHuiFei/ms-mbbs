@@ -1,0 +1,657 @@
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary {
+	display: block
+}
+audio, canvas, video {
+	display: inline-block;
+*display:inline;
+*zoom:1
+}
+audio:not([controls]) {
+	display: none;
+	height: 0
+}
+[hidden] {
+display:none
+}
+html {
+	font-size: 100%;
+	-ms-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%
+}
+body {
+	margin: 0
+}
+a:focus {
+	outline: thin dotted
+}
+a:active, a:hover {
+	outline: 0
+}
+h1 {
+	font-size: 2em;
+	margin: .67em 0
+}
+h2 {
+	font-size: 1.5em;
+	margin: .83em 0
+}
+h3 {
+	font-size: 1.17em;
+	margin: 1em 0
+}
+h4 {
+	font-size: 1em;
+	margin: 1.33em 0
+}
+h5 {
+	font-size: .83em;
+	margin: 1.67em 0
+}
+h6 {
+	font-size: .67em;
+	margin: 2.33em 0
+}
+abbr[title] {
+	border-bottom: 1px dotted
+}
+b, strong {
+	font-weight: bold
+}
+blockquote {
+	margin: 1em 40px
+}
+dfn {
+	font-style: italic
+}
+hr {
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+	height: 0
+}
+mark {
+	background: #ff0;
+	color: #000
+}
+p, pre {
+	margin: 1em 0
+}
+code, kbd, pre, samp {
+	font-family: monospace, serif;
+	_font-family: 'courier new', monospace;
+	font-size: 1em
+}
+pre {
+	white-space: pre;
+	white-space: pre-wrap;
+	word-wrap: break-word
+}
+q {
+	quotes: none
+}
+q:before, q:after {
+	content: '';
+	content: none
+}
+small {
+	font-size: 80%
+}
+sub, sup {
+	font-size: 75%;
+	line-height: 0;
+	position: relative;
+	vertical-align: baseline
+}
+sup {
+	top: -0.5em
+}
+sub {
+	bottom: -0.25em
+}
+dl, menu, ol, ul {
+	margin: 1em 0
+}
+dd {
+	margin: 0 0 0 40px
+}
+menu, ol, ul {
+	padding: 0 0 0 40px
+}
+nav ul, nav ol {
+	list-style: none;
+	list-style-image: none
+}
+img {
+	border: 0;
+	-ms-interpolation-mode: bicubic
+}
+svg:not(:root) {
+	overflow: hidden
+}
+figure {
+	margin: 0
+}
+form {
+	margin: 0
+}
+fieldset {
+	border: 1px solid #c0c0c0;
+	margin: 0 2px;
+	padding: .35em .625em .75em
+}
+legend {
+	border: 0;
+	padding: 0;
+	white-space: normal;
+*margin-left:-7px
+}
+button, input, select, textarea {
+	font-size: 100%;
+	margin: 0;
+	vertical-align: baseline;
+*vertical-align:middle
+}
+button, input {
+	line-height: normal
+}
+button, select {
+	text-transform: none
+}
+button, html input[type="button"], input[type="reset"], input[type="submit"] {
+	-webkit-appearance: button;
+	cursor: pointer;
+*overflow:visible
+}
+button[disabled], html input[disabled] {
+	cursor: default
+}
+input[type="checkbox"], input[type="radio"] {
+	box-sizing: border-box;
+	padding: 0;
+*height:13px;
+*width:13px
+}
+input[type="search"] {
+	-webkit-appearance: textfield;
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box
+}
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration {
+-webkit-appearance:none
+}
+button::-moz-focus-inner, input::-moz-focus-inner {
+border:0;
+padding:0
+}
+textarea {
+	overflow: auto;
+	vertical-align: top
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0
+}
+.clearfix {
+*zoom:1
+}
+.clearfix:before, .clearfix:after {
+	display: table;
+	content: "";
+	line-height: 0
+}
+.clearfix:after {
+	clear: both
+}
+
+a {
+	outline: 0;
+	text-decoration: none
+}
+li {
+	list-style-type: none
+}
+ul, li, p, h1, h2, h3, h4, h5, h6, ol, td, dd, dl, button, input, select, textarea, blockquote {
+	margin: 0;
+	padding: 0
+}
+a:focus {
+	outline: 0
+}
+body {
+	background: #f3f3f3;
+	font-size: 14px;
+	font-family: arial, "Microsoft Yahei", "Hiragino Sans GB", sans-serif;
+	color: #333;
+	-webkit-font-smoothing: antialiased
+}
+.verifycode {
+	margin-bottom: 10px;
+	color: #333;
+	font-size: 12px;
+	position: relative;
+	width: 350px;
+}
+.verifycode input {
+	width: 80px;
+	height: 30px;
+	line-height: 24px;
+	margin: 0 5px;
+	outline: 0;
+	padding: 2px;
+	text-indent: 5px;
+	font-size: 18px
+}
+.verifycode img{
+	position: relative;
+	height: 38px;
+	width: 100px;
+}
+.verifycode .imgErr{
+	position: absolute;
+	top: 51px;
+	left: 46px;
+}
+
+.verifycode .J_change {
+	cursor: pointer
+}
+.verifycode .codeimg {
+	display: none;
+	position: absolute;
+	top: -39px;
+	left: 44px;
+	z-index: 2;
+	width: 145px
+}
+.verifycode .codeimg img {
+	display: block;
+	width: 145px
+}
+.verifycode .resulticon {
+	display: inline-block;
+	margin-left: 5px;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle
+}
+.postwrap {
+	background: #fff;
+	border: 1px solid #e6e6e6;
+	padding: 30px;
+	margin-bottom: 100px;
+	position: relative
+}
+.postwrap #editor {
+	margin: 10px 0
+}
+.postwrap .dropdown_text_middle {
+	width: 180px;
+	height: 38px;
+	line-height: 38px;
+	margin-left: 0
+}
+.postwrap .dropdown_text_middle i {
+	top: 15px
+}
+.postwrap .dropdown_text_middle .selectlist {
+	top: 39px;
+*left:0
+}
+.postwrap .dropdown_text_middle .selectlist li {
+	height: 38px;
+	line-height: 38px
+}
+.postwrap .dropdown_text_middle .selectlist a {
+	display: block;
+	text-align: center;
+	width: 100%;
+	color: #333
+}
+.postwrap .dropdown_text_middle span {
+	height: 38px;
+	line-height: 38px
+}
+.postwrap .check_wrap {
+	width: 14px;
+	height: 14px;
+	display: inline-block;
+	margin: 0 6px 0 0;
+	border: 1px solid #dfdfdf;
+	vertical-align: middle
+}
+.postwrap .check_wrap .check_center {
+	display: block;
+	width: 14px;
+	height: 14px;
+	background: #fff url("../images/check_center.png") 0 0 no-repeat
+}
+.postwrap .postcon {
+	width: 100%
+}
+.postwrap .postcon .title {
+	font-size: 16px;
+	color: #333;
+	line-height: 20px;
+        
+}
+.postwrap .postcon .title a, .postwrap .postcon .title span {
+	float: left
+}
+.postwrap .postcon .importtopic {
+	margin: 10px 0 10px;
+	position: relative
+}
+.postwrap .postcon .importtopic input {
+	float: left;
+	outline: 0;
+	padding: 12px 140px 12px 10px;
+	width: 500px;
+	height:38px;
+	line-height: 14px;
+	border: 1px solid #dfdfdf;
+	text-indent: 10px;
+	font-size: 14px
+}
+.postwrap .postcon .importtopic input::-moz-placeholder {
+color:#a1826b
+}
+.postwrap .postcon .importtopic input::-ms-input-placeholder {
+color:#a1826b
+}
+.postwrap .postcon .importtopic input::-webkit-input-placeholder {
+color:#a1826b
+}
+.postwrap .postcon .importtopic input::-moz-placeholder {
+color:#a1826b
+}
+.postwrap .postcon .importtopic input::-ms-input-placeholder {
+color:#a1826b
+}
+.postwrap .postcon .importtopic input::-webkit-input-placeholder {
+color:#a1826b
+}
+.postwrap .postcon .importtopic input::-moz-placeholder {
+color:#a1826b
+}
+.postwrap .postcon .importtopic input::-ms-input-placeholder {
+color:#a1826b
+}
+.postwrap .postcon .importtopic input::-webkit-input-placeholder {
+color:#a1826b
+}
+.postwrap .postcon .importtopic .lable {
+	font-size: 12px;
+	color: #8c8c8c;
+	position: absolute;
+	left: 370px;
+	top: 11px
+}
+.postwrap .postcon .importtopic .dropdown_text_middle {
+	width: 118px;
+	margin-left: 10px
+}
+.postwrap .postcon .importtopic .dropdown_text_middle span, .postwrap .postcon .importtopic .dropdown_text_middle a {
+	color: #333;
+	height: 38px;
+	line-height: 38px
+}
+.postwrap .postcon .importtopic .selectPlate {
+	z-index: 1;
+	float: left;
+	cursor: pointer;
+	margin-left: 20px;
+	position: relative
+}
+.postwrap .postcon .importtopic .selectPlate span {
+	padding: 0 10px;
+	display: block;
+}
+.postwrap .postcon .importtopic .selectPlatelist {
+	display: none;
+	position: absolute;
+	min-width: 125px;
+	top: 38px;
+	left: 178px;
+	background: #fff;
+	border: 1px solid #e6e6e6;
+	padding: 34px 0;
+	z-index: 1000
+}
+.postwrap .postcon .importtopic .selectPlatelist ul {
+	width: 100%
+}
+.postwrap .postcon .importtopic .selectPlatelist li {
+	float: left;
+	cursor: pointer;
+	width: 121px;
+	line-height: 36px;
+	background: #fff;
+	font-size: 12px;
+	text-align: center;
+	border-right: 1px solid #e6e6e6
+}
+.postwrap .postcon .importtopic .selectPlatelist li:last-child{
+		border-right: none;
+}
+.postwrap .postcon .importtopic .selectPlatelist li:hover {
+	color: #e6240f
+}
+.postwrap .session3 {
+	width: 930px;
+	height: 40px
+}
+.postwrap .session3 .btn {
+	float: left;
+	margin-right: 10px
+}
+.postwrap .session3 .dropdown_text_middle, .postwrap .session3 .txt, .postwrap .session3 .check_wrap {
+	float: right
+}
+.postwrap .session3 .dropdown_text_middle {
+	width: 98px
+}
+.postwrap .session3 .dropdown_text_middle .selectlist {
+	top: auto;
+	bottom: 38px;
+	border-top: 1px solid #e6e6e6
+}
+.postwrap .session3 .txt {
+	margin-right: 10px;
+	line-height: 40px
+}
+.postwrap .session3 .check_wrap {
+	margin: 12px 5px 0 0
+}
+.postwrap .session3 .rebroadcast {
+	width: 104px;
+	float: right;
+	cursor: pointer
+}
+.postwrap .session3 .stxt {
+	float: right
+}
+.postwrap .sendSuccess {
+	width: 100%;
+	height: 100%;
+	background: #f3f3f3;
+	border: 1px solid #f3f3f3;
+	position: absolute;
+	left: -1px;
+	top: -1px;
+	z-index: 99999
+}
+.postwrap .sendSuccess .con {
+	width: 370px;
+	padding: 25px 150px;
+	background: #fff;
+	margin: 50px auto 0
+}
+.postwrap .sendSuccess .con a {
+	display: block;
+	color: #333;
+	margin: 10px 0 0
+}
+.postwrap .sendSuccess .con a:hover {
+	color: #ff4c4c
+}
+.postwrap .sendSuccess .con a.link {
+	margin-top: 20px
+}
+.postwrap .session2 {
+	width: 928px;
+	border: 1px solid #e6e6e6;
+	margin: 10px auto 20px
+}
+.postwrap .session2 .title {
+	padding: 0
+}
+.postwrap .session2 .title li {
+	cursor: pointer;
+	width: 153px;
+	height: 29px;
+	line-height: 29px;
+	float: left;
+	text-align: center;
+	border-right: 1px solid #e6e6e6
+}
+.postwrap .session2 .title li.current {
+	height: 29px;
+	border-bottom: 1px solid #fff
+}
+.postwrap .session2 .title_select {
+	display: none;
+	padding: 30px 0 20px 0;
+	border-top: 1px solid #e6e6e6;
+	width: 100%;
+	margin-top: -1px
+}
+.postwrap .session2 .title_select li {
+	padding: 0 0 0 50px;
+	display: none;
+	line-height: 40px
+}
+.postwrap .session2 .title_select li input[name="necessary"] {
+	display: none
+}
+.postwrap .session2 .title_select li .dropdown_text_middle {
+	width: 118px;
+	margin: 0 10px 0 0
+}
+.postwrap .session2 .title_select li .dropdown_text_middle .selectlist {
+	top: auto;
+	bottom: 38px;
+	border-top: 1px solid #e6e6e6
+}
+.postwrap .session2 .title_select li .dropdown_text_middle span {
+	width: 80%;
+	height: 38px;
+	line-height: 38px
+}
+.postwrap .session2 .title_select li .dropdown_text_middle li {
+	padding: 0;
+	display: block
+}
+.postwrap .session2 .title_select li dl {
+	width: 100%
+}
+.postwrap .session2 .title_select li dt, .postwrap .session2 .title_select li dd {
+	font-size: 14px;
+	color: #333;
+	float: left;
+	line-height: 40px
+}
+.postwrap .session2 .title_select li dt {
+	margin-right: 5px
+}
+.postwrap .session2 .title_select li dd {
+	cursor: pointer;
+	width: 158px
+}
+.postwrap .session2 .title_select li dd lable {
+	width: 100%;
+	height: 40px;
+	line-height: 40px
+}
+.postwrap .session2 .title_select li dd input[type='text'] {
+	position: inherit;
+	width: 78px;
+	height: 38px;
+	border: 0;
+	border: 1px solid #e6e6e6;
+	margin-right: 5px;
+	resize: none;
+	outline: 0;
+	text-indent: 10px
+}
+.postwrap .session2 .title_select li dd div input {
+	display: none
+}
+.postwrap .session2 .title_select li dd.spe {
+	margin-left: 64px
+}
+.postwrap .session2 .title_select li dd.spemb {
+	margin-top: 10px
+}
+.postwrap .session2 .title_select li dd.jurisdictiondd, .postwrap .session2 .title_select li dd.themeprice {
+	width: 600px
+}
+.postwrap .session2 .title_select li dd.lable {
+	width: 668px
+}
+.postwrap .session2 .title_select li dd.lable input {
+	width: 668px
+}
+.postwrap .session2 .title_select li dd.lable span {
+	float: left
+}
+.postwrap .session2 .title_select li dd .gain, .postwrap .session2 .title_select li dd .selectlable {
+	padding: 0 10px;
+	color: #333;
+	cursor: pointer
+}
+.postwrap .session2 .title_select li dd .gain {
+	border-right: 1px solid #adadad
+}
+.postwrap .session2 .title_select li dd.notic {
+	width: auto;
+	padding-left: 54px;
+	color: #8c8c8c;
+	margin-top: 10px;
+	height: 20px;
+	line-height: 20px
+}
+.postwrap .session2 .title_select li .lablename {
+	margin-left: 10px;
+	display: inline-block;
+	color: #333
+}
+.postwrap .session2 .title_select li .lablename span {
+	color: #a1826b;
+	margin-left: 5px
+}
+.postwrap .session2 .title_select li span {
+	font-size: 14px;
+	color: #8c8c8c
+}
+.postwrap .session2 .title_select li.sellingprice {
+	padding-top: 30px
+}
+.postwrap .session2 .title_select li.lable input {
+	width: 668px
+}
+.postwrap .session2 .title_select li.attach dt, .postwrap .session2 .title_select li.attach dd {
+	line-height: 20px
+}
+.postwrap .session2 .title_select li.attach dd {
+	width: 130px;
+	margin-right: 20px
+}
+.postwrap .session2 .title_select li.attach .check_wrap {
+	margin-top: -2px
+}
+.postwrap .session2 .title_select li.current {
+	display: block
+}
+.postwrap .session2 .title_select li:first-child dd {
+	overflow: hidden
+}

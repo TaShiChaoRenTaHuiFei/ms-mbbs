@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mingsoft.bbs.dao.ISubjectDao">
+	<!-- 用于替换视图 -->
+	<sql id="select_subject">
+		select
+		BASIC_ID,BASIC_TITLE,BASIC_DESCRIPTION,BASIC_THUMBNAILS,BASIC_HIT,BASIC_UPDATETIME,BASIC_DATETIME,BASIC_MODELID,BASIC_APPID,BASIC_SHARE,BASIC_TYPE
+		,BASIC_COLLECT,BASIC_COMMENT
+		SUBJECT_DISPLAY,SUBJECT_BASIC_ID,PEOPLE_NAME,PEOPLE_ID,PU_ICON,group_concat(bt_type
+		separator ',') AS bt_type,BASIC_CATEGORYID,SUBJECT_CONTENT,
+		CATEGORY_TITLE,BASIC_PEOPLEID,PU_NICKNAME,BASIC_SORT,SUBJECT_FORUM_FIRST_ID,SUBJECT_FORUM_SECOND_ID,SUBJECT_COMMENT_COUNT,SUBJECT_LAST_COMMENT_TIME,SUBJECT_LAST_PEOPLE_NAME
+		from (((((mbbs_subject left join basic on((BASIC_ID =
+		SUBJECT_BASIC_ID)))
+		left join basic_type on((BASIC_ID = bt_basic_id)))
+		left join people on((BASIC_PEOPLEID = PEOPLE_ID)))
+		left join
+		people_user on((BASIC_PEOPLEID = PU_PEOPLE_ID)))
+		left join category
+		on((BASIC_CATEGORYID = CATEGORY_ID)))
+	</sql>
+	<sql id="column_list">
+		SUBJECT_BASIC_ID,SUBJECT_DISPLAY,BASIC_ID,BASIC_TITLE,BASIC_HIT,BASIC_DESCRIPTION,
+		BASIC_THUMBNAILS,BASIC_UPDATETIME,BASIC_DATETIME,BASIC_MODELID,BASIC_APPID,BASIC_TYPE,
+		BASIC_CATEGORYID,BASIC_PEOPLEID,BASIC_SORT,PEOPLE_NAME,CATEGORY_TITLE,BASIC_CATEGORYID,PU_ICON,PU_NICKNAME,
+		SUBJECT_COMMENT_COUNT,SUBJECT_LAST_PEOPLE_NAME,SUBJECT_LAST_COMMENT_TIME
+	</sql>
+
+	<!--帖子mbbs_subject表部分 -->
+	<resultMap id="resultMap" type="com.mingsoft.bbs.entity.SubjectEntity">
+		<id column="SUBJECT_BASIC_ID" property="subjectBasicId" />
+		<result column="SUBJECT_CONTENT" property="subjectContent" />
+		<result column="SUBJECT_DISPLAY" property="subjectDisplay" />
+		<result column="BASIC_ID" property="basicId" />
+		<result column="BASIC_TITLE" property="basicTitle" />
+		<result column="BASIC_HIT" property="basicHit" />
+		<result column="BASIC_DESCRIPTION" property="basicDescription" />
+		<result column="BASIC_THUMBNAILS" property="basicThumbnails" />
+		<result column="BASIC_UPDATETIME" property="basicUpdateTime" />
+		<result column="BASIC_DATETIME" property="basicDateTime" />
+		<result column="BASIC_MODELID" property="basicModelId" />
+		<result column="BASIC_APPID" property="basicAppId" />
+		<result column="BASIC_CATEGORYID" property="basicCategoryId" />
+		<result column="BASIC_PEOPLEID" property="basicPeopleId" />
+		<result column="BASIC_SORT" property="basicSort" />
+		<result column="BASIC_TYPE" property="basicType" />
+
+		<result column="SUBJECT_COMMENT_COUNT" property="subjectTotalComment" /><!-- 
+			帖子总评论 -->
+		<result column="SUBJECT_LAST_COMMENT_TIME" property="subjectLastCommentTime" /><!-- 
+			帖子最后评论时间 -->
+		<result column="SUBJECT_LAST_PEOPLE_NAME" property="subjectLastCommentPeopleName" /><!-- 
+			帖子最后评论人用户名 -->
+
+		<association column="BASIC_CATEGORYID" property="subjectForum"
+			javaType="com.mingsoft.bbs.entity.ForumEntity">
+			<result property="categoryTitle" column="CATEGORY_TITLE" />
+			<result property="categoryId" column="BASIC_CATEGORYID" />
+		</association>
+
+
+		<association column="BASIC_PEOPLEID" property="subjectPeopleUser"
+			javaType="com.mingsoft.people.entity.PeopleUserEntity">
+
+			<result property="peopleUserIcon" column="PU_ICON" />
+			<result property="peopleName" column="PEOPLE_NAME" />
+			<result property="peopleUserNickName" column="PU_NICKNAME" />
+		</association>
+	</resultMap>
+
+
+	<!-- 新增帖子开始 -->
+	<insert id="saveEntity" parameterType="com.mingsoft.bbs.entity.SubjectEntity">
+		insert into mbbs_subject
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="basicId != null">SUBJECT_BASIC_ID,</if>
+			<if test="subjectContent != null">SUBJECT_CONTENT,</if>
+			<if test="subjectDisplay != null">SUBJECT_DISPLAY,</if>
+			<if test="subjectForumFirstId != null">SUBJECT_FORUM_FIRST_ID,</if>
+			<if test="subjectForumSecondId != null">SUBJECT_FORUM_SECOND_ID</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="basicId != null">#{basicId},</if>
+			<if test="subjectContent != null">#{subjectContent},</if>
+			<if test="subjectDisplay !=null">#{subjectDisplay},</if>
+			<if test="subjectForumFirstId != null">#{subjectForumFirstId},</if>
+			<if test="subjectForumSecondId != null">#{subjectForumSecondId}</if>
+		</trim>
+	</insert>
+	<!-- 新增帖子结束 -->
+
+
+	<!-- 通过用户id查询帖子开始 -->
+	<select id="queryByPeopleId" resultMap="resultMap"
+		parameterType="Integer">
+		select
+		<include refid="column_list" />
+		from v_subject
+		<where>
+			<if test="appId !=null">
+				and BASIC_APPID=#{appId}
+			</if>
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<if test="peopleId != null">
+				and PEOPLE_ID=#{peopleId}
+			</if>
+			group by BASIC_ID
+			ORDER BY BASIC_DATETIME DESC
+
+			<if test="page != null">
+				limit
+				${page.pageNo*page.pageSize},#{page.pageSize}
+			</if>
+		</where>
+	</select>
+	<!-- 通过用户id查询帖子结束 -->
+
+	<!-- 通过用户id查询帖子总数开始 -->
+	<select id="countByPeopleId" resultType="Integer">
+		select count(*) from basic
+		<where>
+			<if test=" appId !=null">
+				and BASIC_APPID=#{appId}
+			</if>
+			<if test="modelId !=null">
+				and BASIC_MODELID=#{modelId}
+			</if>
+			<if test=" peopleId !=null">
+				and BASIC_PEOPLEID=#{peopleId}
+			</if>
+		</where>
+	</select>
+	<!-- 通过用户id查询帖子总数结束 -->
+
+	<!-- 根据basicID删除开始 -->
+	<delete id="delete" parameterType="List">
+		delete a,b from basic a,mbbs_subject b
+		<where>
+			<if test=" appId !=null">
+				and a.BASIC_APPID = #{appId}
+			</if>
+			and a.BASIC_ID in
+			<foreach collection="ids" item="item" index="index" open="("
+				separator="," close=")">#{item}</foreach>
+			and b.SUBJECT_BASIC_ID in
+			<foreach collection="ids" item="item" index="index" open="("
+				separator="," close=")">#{item}</foreach>
+			<if test="peopleId != null">
+				and a.BASIC_PEOPLEID = #{peopleId}
+			</if>
+		</where>
+	</delete>
+	<!-- 根据basicID删除结束 -->
+
+
+	<!-- 根据appId和basicId更改MBBS_SUBJECT表的帖子是否显示开始 -->
+	<update id="updateSubjectDisplay" parameterType="Integer">
+		update MBBS_SUBJECT
+		<set>
+			<if test="subjectMark != null">SUBJECT_DISPLAY = #{subjectMark},</if>
+		</set>
+		where SUBJECT_BASIC_ID=#{basicId}
+	</update>
+	<!-- 根据appId和basicId更改MBBS_SUBJECT表的帖子是否显示结束 -->
+
+	<!-- 根据站点ID和时间查询贴子总数开始 -->
+	<select id="getCountByDay" resultType="Integer">
+		select count(*)
+		from basic
+		<where>
+			<if test=" appId !=null">
+				and basic_appid=#{appId}
+			</if>
+			<if test="categoryId !=null">
+				and basic_categoryId=#{categoryId}
+			</if>
+			<if test=" today !=null">
+				and BASIC_DATETIME &gt;= #{today}
+			</if>
+			<if test="tomorrow != null">
+				and BASIC_DATETIME &lt; #{tomorrow}
+			</if>
+		</where>
+	</select>
+	<!-- 根据站点ID和时间查询贴子总数结束 -->
+
+
+
+
+
+
+	<!-- 通过帖子类型查询帖子总数开始 -->
+	<select id="getCountBySubjectTypeId" resultType="int"
+		parameterType="Integer">
+		select count(*)
+		from v_subject
+		<where>
+			basic_appId = #{appId}
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<if test="isDisplay!=null">
+				and SUBJECT_DISPLAY=#{isDisplay}
+			</if>
+		</where>
+
+	</select>
+	<!-- 通过帖子类型查询帖子总数结束 -->
+
+	<!-- 通过帖子类型查询帖子列表开始 -->
+	<select id="queryBySubjectTypeId" resultMap="resultMap"
+		parameterType="Integer">
+		select
+		<include refid="column_list" />
+		from v_subject
+		<where>
+			basic_appId = #{appId}
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<if test="isDisplay!=null">
+				and SUBJECT_DISPLAY=#{isDisplay}
+			</if>
+		</where>
+		ORDER BY basic_id DESC
+		<if test="page != null">
+			limit
+			${page.pageNo*page.pageSize},#{page.pageSize}
+		</if>
+	</select>
+	<!-- 通过帖子类型查询帖子列表结束 -->
+
+	<!-- 通过视图表和指定条件查询帖子条数开始 -->
+	<select id="getCountByMapForSearch" resultType="Integer">
+		select count(*) from v_subject
+		<where>
+			<if test=" appId !=null">
+				and basic_appid=#{appId}
+			</if>
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<if test="isDisplay!=null">
+				and SUBJECT_DISPLAY=#{isDisplay}
+			</if>
+			<if test="whereMap!=null">
+				<!--帖子所属的帖子属性 -->
+				<!--帖子所属的板块 -->
+				<if test=" whereMap.categoryId!=null">
+					and
+					FIND_IN_SET(BASIC_CATEGORYID,func_child_category(#{whereMap.categoryId}))
+				</if>
+				<!-- 帖子的标题 -->
+				<if test="whereMap.basicTitle!=null">
+					and basic_title like
+					CONCAT('%',#{whereMap.basicTitle},'%')
+				</if>
+			</if>
+		</where>
+	</select>
+	<!-- 通过视图表和指定条件查询帖子条数结束 -->
+
+	<!-- 通过视图表和指定条件查询帖子列表开始 -->
+	<select id="queryByMapForSearch" resultMap="resultMap">
+		select
+		<include refid="column_list" />
+		from v_subject
+		<where>
+			<if test=" appId !=null">
+				and basic_appid=#{appId}
+			</if>
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<if test="isDisplay!=null">
+				and SUBJECT_DISPLAY=#{isDisplay}
+			</if>
+			<if test="whereMap!=null">
+				<!--帖子所属的帖子属性 -->
+				<!--帖子所属的板块 -->
+				<if test=" whereMap.categoryId!=null">
+					and BASIC_CATEGORYID=#{categoryId}
+				</if>
+				<!-- 帖子的标题 -->
+				<if test="whereMap.basicTitle!=null">
+					and basic_title like
+					CONCAT('%',#{whereMap.basicTitle},'%')
+				</if>
+			</if>
+		</where>
+		ORDER BY
+		<if test="orderBy!=null">
+			${orderBy}
+			<if test="order==true">asc</if>
+			<if test="order==false">DESC</if>
+		</if>
+		<if test="orderBy==null">
+			basic_id
+			<if test="order==true">asc</if>
+			<if test="order==false">DESC</if>
+		</if>
+		<if test="page != null">
+			limit
+			${page.pageNo*page.pageSize},#{page.pageSize}
+		</if>
+	</select>
+	<!-- 通过视图表和指定条件查询帖子帖子列表结束 -->
+
+	<!-- 更新帖子内容 -->
+	<update id="updateEntity" parameterType="com.mingsoft.bbs.entity.SubjectEntity">
+		update MBBS_SUBJECT
+		<set>
+			SUBJECT_BASIC_ID = #{basicId},
+			<if test="subjectContent != null ">SUBJECT_CONTENT=#{subjectContent},</if>
+			<if test="subjectForumFirstId != null and subjectForumFirstId gt 0">SUBJECT_FORUM_FIRST_ID=#{subjectForumFirstId},</if>
+			<if test="subjectForumSecondId != null and subjectForumSecondId gt 0">SUBJECT_FORUM_SECOND_ID=#{subjectForumSecondId},</if>
+		</set>
+		where SUBJECT_BASIC_ID = #{basicId}
+	</update>
+
+
+
+	<!-- 更新帖子的排序 -->
+	<update id="updateSort" parameterType="com.mingsoft.bbs.entity.SubjectEntity">
+		update basic
+		<set>
+			<if test="basicSort != null">BASIC_SORT=#{basicSort},</if>
+		</set>
+		<where>
+			basic_appid=#{appId} and basic_modelId = #{modelId}
+			<if test="basicId!=null">
+				and BASIC_ID = #{basicId}
+			</if>
+			<if test="categoryId!=null">
+				and BASIC_CATEGORYID =#{categoryId}
+			</if>
+
+		</where>
+	</update>
+
+	<!-- 通过帖子类型和分类id查询帖子总数开始 -->
+	<select id="getCountByForumIdAndSubjectTypeId" resultType="int"
+		parameterType="Integer">
+		select count(*)
+		from v_subject
+		<where>
+			basic_appId = #{appId}
+			<if test=" flag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="flag" open="(" separator=","
+					close=")">
+					#{title}
+				</foreach>
+				),basic_type) &gt; 0
+			</if>
+
+			<if test=" noFlag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="noFlag" open="("
+					separator="," close=")">
+					#{title}
+				</foreach>
+				),basic_type) = 0
+			</if>
+
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<!--帖子所属的板块 -->
+			<if test="categoryId gt 0">
+				and BASIC_CATEGORYID=#{categoryId}
+			</if>
+
+			<if test=" keyWord !=null ">
+				and basic_title like CONCAT('%',#{ keyWord},'%')
+			</if>
+			<if test="isDisplay!=null">
+				and SUBJECT_DISPLAY=#{isDisplay}
+			</if>
+		</where>
+	</select>
+	<!-- 通过帖子类型和分类id查询帖子总数结束 -->
+
+	<!-- 通过帖子类型和分类id查询帖子列表开始 -->
+	<select id="queryByForumIdAndSubjectTypeId" resultMap="resultMap">
+		select
+		<include refid="column_list" />
+		from v_subject
+		<where>
+			basic_appId = #{appId}
+
+			<if test=" flag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="flag" open="(" separator=","
+					close=")">
+					#{title}
+				</foreach>
+				),basic_type) &gt; 0
+			</if>
+
+			<if test=" noFlag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="noFlag" open="("
+					separator="," close=")">
+					#{title}
+				</foreach>
+				),basic_type) = 0
+			</if>
+
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<!--帖子所属的板块 -->
+			<if test="categoryId gt 0">
+				and BASIC_CATEGORYID=#{categoryId}
+			</if>
+			<if test=" keyWord !=null ">
+				and basic_title like CONCAT('%',#{ keyWord},'%')
+			</if>
+			<if test="isDisplay!=null">
+				and SUBJECT_DISPLAY=#{isDisplay}
+			</if>
+		</where>
+		ORDER BY
+		<if test="orderBy!=null">
+			${orderBy}
+			<if test="order==true">asc</if>
+			<if test="order==false">DESC</if>
+		</if>
+		<if test="orderBy==null">
+			basic_id
+			<if test="order==true">asc</if>
+			<if test="order==false">DESC</if>
+		</if>
+		<if test="page != null">
+			limit
+			${page.pageNo*page.pageSize},#{page.pageSize}
+		</if>
+	</select>
+	<!--通过帖子类型和分类id查询帖子帖子帖子列表结束 -->
+
+	<!-- 通过栏目id查询开始 -->
+	<select id="getMaxSort" resultType="int">
+		select COALESCE(max(basic_sort),0)
+		from
+		`mbbs_subject` LEFT JOIN `basic`
+		ON `mbbs_subject`.`SUBJECT_BASIC_ID` = `basic`.`BASIC_ID`
+		<where>
+			<if test=" appId !=null">
+				and basic_appid=#{appId}
+			</if>
+			<if test=" categoryId !=null">
+				and BASIC_CATEGORYID =#{categoryId}
+			</if>
+			<if test="modelId!= null">
+				and basic_modelId = #{modelId}
+			</if>
+
+		</where>
+	</select>
+	<!-- 通过栏目id查询结束 -->
+
+	<!-- 根据帖子的一级板块id或者帖子的属性和不显示该属性进行帖子列表的查询开始 -->
+	<select id="queryByFirstForumIdAndSubjectTypeId" resultMap="resultMap">
+		select
+		<include refid="column_list" />
+		from v_subject
+		<where>
+			basic_appId = #{appId}
+			<if test=" flag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="flag" open="(" separator=","
+					close=")">
+					#{title}
+				</foreach>
+				),b.basic_type) &gt; 0
+			</if>
+			<if test=" noFlag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="noFlag" open="("
+					separator="," close=")">
+					#{title}
+				</foreach>
+				),b.basic_type) = 0
+			</if>
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<!--帖子所属的板块 -->
+			<if test="firstForumId gt 0">
+				and SUBJECT_FORUM_FIRST_ID=#{firstForumId}
+			</if>
+			<if test=" keyWord !=null ">
+				and basic_title like CONCAT('%',#{ keyWord},'%')
+			</if>
+			<if test="isDisplay!=null">
+				and SUBJECT_DISPLAY=#{isDisplay}
+			</if>
+		</where>
+		ORDER BY
+		<if test="orderBy!=null">
+			${orderBy}
+			<if test="order==true">asc</if>
+			<if test="order==false">DESC</if>
+		</if>
+		<if test="orderBy==null">
+			basic_id
+			<if test="order==true">asc</if>
+			<if test="order==false">DESC</if>
+		</if>
+		<if test="page != null">
+			limit
+			${page.pageNo*page.pageSize},#{page.pageSize}
+		</if>
+	</select>
+	<!--根据帖子的一级板块id或者帖子的属性和不显示该属性进行帖子列表的查询结束 -->
+
+
+	<!-- 根据帖子的二级板块id或者帖子的属性和不显示该属性进行帖子列表的查询开始 -->
+	<select id="queryBySecondForumIdAndSubjectTypeId" resultMap="resultMap">
+		select
+		<include refid="column_list" />
+		from v_subject
+		<where>
+			basic_appId = #{appId}
+
+			<if test=" flag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="flag" open="(" separator=","
+					close=")">
+					#{title}
+				</foreach>
+				),basic_type) &gt; 0
+			</if>
+			<if test=" noFlag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="noFlag" open="("
+					separator="," close=")">
+					#{title}
+				</foreach>
+				),basic_type) = 0
+			</if>
+
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<!--帖子所属二级板块id -->
+			<if test="secondForumId gt 0">
+				and SUBJECT_FORUM_SECOND_ID=#{secondForumId}
+			</if>
+			<if test=" keyWord !=null ">
+				and basic_title like CONCAT('%',#{ keyWord},'%')
+			</if>
+			<if test="isDisplay!=null">
+				and SUBJECT_DISPLAY=#{isDisplay}
+			</if>
+		</where>
+		ORDER BY
+		<if test="orderBy!=null">
+
+			${orderBy}
+			<if test="order==true">asc</if>
+			<if test="order==false">DESC</if>
+		</if>
+		<if test="orderBy==null">
+			basic_id
+			<if test="order==true">asc</if>
+			<if test="order==false">DESC</if>
+		</if>
+
+		<if test="page != null">
+			limit
+			${page.pageNo*page.pageSize},#{page.pageSize}
+		</if>
+
+	</select>
+	<!--根据帖子的二级板块id或者帖子的属性和不显示该属性进行帖子列表的查询结束 -->
+
+	<!-- 通过帖子类型和分类id查询帖子总数开始 -->
+	<select id="getCountByFirstForumIdAndSubjectTypeId" resultType="int"
+		parameterType="Integer">
+		select count(*)
+		from v_subject
+		<where>
+			basic_appId = #{appId}
+			<if test=" flag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="flag" open="(" separator=","
+					close=")">
+					#{title}
+				</foreach>
+				),basic_type) &gt; 0
+			</if>
+			<if test=" noFlag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="noFlag" open="("
+					separator="," close=")">
+					#{title}
+				</foreach>
+				),basic_type) = 0
+			</if>
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<!--帖子所属的板块 -->
+			<if test="firstForumId gt 0">
+				and SUBJECT_FORUM_FIRST_ID=#{firstForumId}
+			</if>
+
+			<if test=" keyWord !=null ">
+				and basic_title like CONCAT('%',#{ keyWord},'%')
+			</if>
+			<if test="isDisplay!=null">
+				and SUBJECT_DISPLAY=#{isDisplay}
+			</if>
+		</where>
+	</select>
+
+
+	<!-- 通过帖子类型和分类id查询帖子总数开始 -->
+	<select id="getCountBySecondForumIdAndSubjectTypeId" resultType="int"
+		parameterType="Integer">
+		select count(*)
+		from v_subject
+		<where>
+			basic_appId = #{appId}
+			<if test=" flag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="flag" open="(" separator=","
+					close=")">
+					#{title}
+				</foreach>
+				),basic_type) &gt; 0
+			</if>
+			<if test=" noFlag != null">
+				and find_in_set((select group_concat(category_id) from category
+				where CATEGORY_APPID=#{appId} and
+				category_title in
+				<foreach item="title" collection="noFlag" open="("
+					separator="," close=")">
+					#{title}
+				</foreach>
+				),basic_type) = 0
+			</if>
+			<if test="modelId != null">
+				and basic_modelId = #{modelId}
+			</if>
+			<!--帖子所属的板块 -->
+			<if test="secondForumId gt 0">
+				and SUBJECT_FORUM_SECOND_ID=#{secondForumId}
+			</if>
+
+			<if test=" keyWord !=null ">
+				and basic_title like CONCAT('%',#{ keyWord},'%')
+			</if>
+			<if test="isDisplay!=null">
+				and SUBJECT_DISPLAY=#{isDisplay}
+			</if>
+		</where>
+	</select>
+
+	<!-- 更新帖子统计信息 -->
+	<update id="updateStatisticsInfo" parameterType="com.mingsoft.bbs.entity.SubjectEntity">
+		update MBBS_SUBJECT
+		<set>
+			<if test="subjectTotalComment gt 0">SUBJECT_COMMENT_COUNT=#{subjectTotalComment},</if>
+			<if test="subjectLastCommentTime!=null">SUBJECT_LAST_COMMENT_TIME=#{subjectLastCommentTime},</if>
+			<if test="subjectLastCommentPeopleName!=null">SUBJECT_LAST_PEOPLE_NAME=#{subjectLastCommentPeopleName}
+			</if>
+		</set>
+		where SUBJECT_BASIC_ID = #{basicId}
+	</update>
+	
+	<!-- 通过basicId查询帖子内容开始 -->
+	<select id="getEntity" resultMap="resultMap" parameterType="Integer">
+		select
+		<include refid="column_list" />
+		,SUBJECT_CONTENT
+		from v_subject WHERE
+		BASIC_ID = #{basicId}
+	</select>
+	<!-- 通过basicId查询帖子内容结束 -->
+	
+</mapper>	
