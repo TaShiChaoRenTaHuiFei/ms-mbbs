@@ -57,7 +57,7 @@ public class SubjectCommentMailAop extends BaseAop {
 		if (!StringUtil.isBlank(this.getCode(request))) {
 			CommentEntity comment = this.getType(jp, CommentEntity.class);
 			Map<String, String> params = new HashMap<String, String>();
-			Map<String, String> content = new HashMap<String, String>();
+			Map<String, String> content = new HashMap<String, String>(); 
 			content.put("commentContent", comment.getCommentContent());
 			content.put("subjectId", comment.getCommentBasicId() + "");
 			BasicEntity basic = basicBiz.getBasicEntity(comment.getCommentBasicId());
@@ -65,7 +65,7 @@ public class SubjectCommentMailAop extends BaseAop {
 			content.put("subjectId", comment.getCommentBasicId() + "");
 			content.put("subjectTitle", basic.getBasicTitle() + "");
 			content.put("userName", people.getPeopleUser().getPeopleUserNickName());
-			params.put("thrid", "1"); //使用第三方平台发送，确保用户能收到
+			params.put("thrid", "sendcloud"); //使用第三方平台发送，确保用户能收到
 			params.put("modelCode", this.encryptByAES(this.getAppId(request), this.getCode(request)));
 			
 			if (people.getPeopleMailCheck() == PeopleEnum.MAIL_CHECK.toInt()) {
