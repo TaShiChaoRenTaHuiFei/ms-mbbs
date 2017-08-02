@@ -194,13 +194,13 @@ public class ForumAction  extends BaseAction {
 	@RequestMapping("/update")
 	public void update(@ModelAttribute ForumEntity forum,
 			HttpServletRequest request, HttpServletResponse response) {
-		CategoryEntity categoryEntity = categoryBiz.getCategory(forum.getCategoryId());
+		CategoryEntity categoryEntity = (CategoryEntity)categoryBiz.getEntity(forum.getCategoryId());
 		ForumEntity _forum = forumBiz.getByForumId(forum.getCategoryId(),this.getAppId(request));
 		if (_forum.getForumId() ==0) {
 			forum.setForumId(forum.getCategoryId());
 			forumBiz.saveEntity(forum);
 		} 
-		categoryBiz.updateCategoryEntity(forum);
+		categoryBiz.updateCategory(forum);
 		
 		this.outJson(response,com.mingsoft.bbs.constant.ModelCode.BBS_CATEGORY, true, null,String.valueOf(forum.getCategoryId()));
 	}

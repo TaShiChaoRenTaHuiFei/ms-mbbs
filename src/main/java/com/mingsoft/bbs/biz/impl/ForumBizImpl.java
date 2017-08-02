@@ -152,7 +152,7 @@ public class ForumBizImpl extends CategoryBizImpl implements IForumBiz {
 	@Override
 	public void saveForum(ForumEntity forum) {
 		//forumDao
-		this.saveCategoryEntity(forum);
+		this.saveCategory(forum);
 		forum.setForumId(forum.getCategoryId());
 		forumDao.saveEntity(forum);
 	}

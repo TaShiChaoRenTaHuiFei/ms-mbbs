@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.mingsoft.base.constant.e.BaseEnum;
-import com.mingsoft.basic.biz.IBasicTypeBiz;
 import com.mingsoft.basic.biz.ICategoryBiz;
 import com.mingsoft.basic.biz.IModelBiz;
 import com.mingsoft.basic.entity.AppEntity;
@@ -484,7 +483,7 @@ public class BbsParser extends IGeneralParser {
 			return htmlContent;
 		}
 		
-		return new TypeParser(htmlContent,this.forum,this.getAppUrl(),this.categoryBiz.getCategory(forum.getCategoryCategoryId())).parse();
+		return new TypeParser(htmlContent,this.forum,this.getAppUrl(),(CategoryEntity)this.categoryBiz.getEntity(forum.getCategoryCategoryId())).parse();
 	}
 	/**
 	 * 解析分页列表标签

@@ -11,17 +11,14 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.mingsoft.basic.biz.IBasicTypeBiz;
 import com.mingsoft.basic.biz.ICategoryBiz;
 import com.mingsoft.basic.constant.e.CookieConstEnum;
-import com.mingsoft.basic.entity.BasicTypeEntity;
 import com.mingsoft.basic.entity.CategoryEntity;
 import com.mingsoft.bbs.biz.IForumBiz;
 import com.mingsoft.bbs.biz.ISubjectBiz;
 import com.mingsoft.bbs.constant.ModelCode;
 import com.mingsoft.bbs.entity.SubjectEntity;
 import com.mingsoft.util.PageUtil;
-import com.mingsoft.util.StringUtil;
 
 @Controller("bbsManagerSubject")
 @RequestMapping("/${managerPath}/bbs/subject")
@@ -43,8 +40,6 @@ public class SubjectAction extends BaseAction {
 	private ICategoryBiz categoryBiz;
 	
 	
-	@Autowired
-	private IBasicTypeBiz basicTypeBiz;
 
 	/**
 	 * 查询帖子列表

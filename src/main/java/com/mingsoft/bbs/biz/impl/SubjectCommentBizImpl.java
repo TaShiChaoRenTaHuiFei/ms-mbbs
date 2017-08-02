@@ -14,6 +14,7 @@ import com.mingsoft.bbs.biz.ISubjectCommentBiz;
 import com.mingsoft.bbs.constant.e.SubjectCommentTypeEnum;
 import com.mingsoft.bbs.dao.ISubjectCommentDao;
 import net.mingsoft.comment.biz.impl.CommentBizImpl;
+import net.mingsoft.comment.dao.ICommentDao;
 import net.mingsoft.comment.entity.CommentEntity;
 import com.mingsoft.util.PageUtil;
 
@@ -26,6 +27,11 @@ public class SubjectCommentBizImpl extends CommentBizImpl implements ISubjectCom
 	@Autowired
 	private ISubjectCommentDao subjectCommentDao;
 	
+	/**
+	 * 评论持久化层
+	 */ 
+	@Autowired
+	private ICommentDao commentDao;
 	/**
 	 * 扩展评论模块不需要重写getDao方法
 	 */
@@ -109,7 +115,8 @@ public class SubjectCommentBizImpl extends CommentBizImpl implements ISubjectCom
 	@Override
 	public int saveComment(CommentEntity comment) {
 		// TODO Auto-generated method stub
-		return this.saveEntity(comment);
+		LOG.debug("saveComment biz");
+		return commentDao.saveEntity(comment);
 	}
 
 	@Override

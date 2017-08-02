@@ -25,6 +25,8 @@ import com.mingsoft.bbs.biz.ISubjectBiz;
 import com.mingsoft.bbs.biz.ISubjectCommentBiz;
 import com.mingsoft.bbs.constant.e.SubjectCommentTypeEnum;
 import com.mingsoft.bbs.entity.SubjectEntity;
+
+import net.mingsoft.basic.util.BasicUtil;
 import net.mingsoft.comment.entity.CommentEntity;
 import com.mingsoft.people.entity.PeopleEntity;
 import com.mingsoft.util.PageUtil;
@@ -172,11 +174,12 @@ public class SubjectCommentAction extends BaseAction {
 				return;
 			}
 		}
-
 		comment.setCommentPeopleId(people.getPeopleId());
-		comment.setCommentAppId(this.getAppId(request));
+		comment.setCommentAppId(BasicUtil.getAppId());
 		comment.setCommentTime(new Date());
+		LOG.debug("保存帖子-start" + comment +":"+ people.getPeopleId() +":"+subjectCommentBiz);
 		this.subjectCommentBiz.saveComment(comment);
+		LOG.debug("保存帖子-end");
 		this.outJson(response, net.mingsoft.comment.constant.ModelCode.COMMENT, true, null,
 				JSONObject.toJSONStringWithDateFormat(comment, "yyyy-MM-dd HH:mm:ss"));
 	}

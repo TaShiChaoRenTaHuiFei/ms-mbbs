@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mingsoft.base.dao.IBaseDao;
+import com.mingsoft.basic.biz.ICategoryBiz;
 import com.mingsoft.basic.biz.impl.BasicBizImpl;
 import com.mingsoft.basic.dao.ICategoryDao;
 import com.mingsoft.basic.dao.IModelDao;
@@ -70,6 +71,9 @@ public class ModeratorBizImpl  extends BasicBizImpl implements IModeratorBiz{
 	@Autowired
 	private ICategoryDao categoryDao;
 	
+	@Autowired
+	private ICategoryBiz categoryBiz;
+	
 	/**
 	 * 模块管理持久化层
 	 */
@@ -113,19 +117,15 @@ public class ModeratorBizImpl  extends BasicBizImpl implements IModeratorBiz{
 	@Override
 	public ModeratorEntity getModeratorByPeopleId(int appId, int forumId, int peopleId) {
 		//获取父栏目集合
-		String parserIds = categoryDao.queryParentIds(forumId);
+		String parserIds = "";//categoryDao.queryParentIds(forumId);
 		ModelEntity model= modelDao.getEntityByModelCode( com.mingsoft.bbs.constant.ModelCode.BBS_CATEGORY.toString());
 		//获取子分类集合
-		List<Integer> childrenIds = categoryDao.queryCategoryIdByCategoryId(forumId, model.getModelId(),  model.getModelId());
+		int[] childrenIds = categoryBiz.queryChildrenCategoryIds(forumId,model.getModelId(),  model.getModelId());
 		ModeratorEntity moderator =null;
 		if (!StringUtil.isBlank(parserIds)) {
-			List<Integer> list=new ArrayList<Integer>();
 			String[] _ids = parserIds.split(",");
-			for (int i=0;i<_ids.length;i++) {
-				list.add(Integer.parseInt(_ids[i]));
-			}
-			moderator=mbbsModeratorDao.getByPeopleIdAndForumIds(appId,list,peopleId);
-		}else if(childrenIds.size() != 0 || childrenIds!=null){
+			moderator=mbbsModeratorDao.getByPeopleIdAndForumIds(appId,StringUtil.stringsToInts(_ids),peopleId);
+		}else if(childrenIds.length != 0 || childrenIds!=null){
 			moderator= mbbsModeratorDao.getByPeopleIdAndForumIds(appId,childrenIds,peopleId);
 		}
 		return moderator;

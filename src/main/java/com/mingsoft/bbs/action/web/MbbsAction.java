@@ -110,20 +110,20 @@ public class MbbsAction extends com.mingsoft.bbs.action.BaseAction {
 
 		Map map = new HashMap();
 		String html = readTemplate(Const.MBBS + File.separator + DETAIL + IParser.HTM_SUFFIX, request);
-		List<BasicEntity> list = subjectBiz.getPreviousAndNext(basicId);
+		//List<BasicEntity> list = subjectBiz.getPreviousAndNext(basicId);
 		// 更新帖子点击量
 		subjectBiz.updateHit(basicId, null);
 
 		map.put(IGeneralParser.CUR_PAGE_NO, curPageNo);
 		map.put(IGeneralParser.LIST_LINK_PATH, listLinkPath);
-		if (list.size() > 0) {
-			map.put(IGeneralParser.PREVIOUS, list.get(0));
-			if (list.size() > 1) {
-				map.put(IGeneralParser.NEXT, list.get(1));
-			}
-		}
-		map.put(BbsParser.POSTION, forumBiz.queryParent(this.getAppId(request), ModelCode.BBS_CATEGORY.toInt(),
-				subject.getBasicCategoryId()));
+//		if (list.size() > 0) {
+//			map.put(IGeneralParser.PREVIOUS, list.get(0));
+//			if (list.size() > 1) {
+//				map.put(IGeneralParser.NEXT, list.get(1));
+//			}
+//		}
+		//map.put(BbsParser.POSTION, forumBiz.queryParent(this.getAppId(request), ModelCode.BBS_CATEGORY.toInt(),subject.getBasicCategoryId()));
+		map.put(BbsParser.POSTION, "");
 		map.put(IGeneralParser.REQUEST_PARAM, this.assemblyRequestMap(request));
 		String content = bbsParser.parse(html, app, subject, map);
 		this.outString(response, content);
@@ -143,7 +143,7 @@ public class MbbsAction extends com.mingsoft.bbs.action.BaseAction {
 
 //		 PeopleUserEntity peopleUserEntity = new PeopleUserEntity();
 //		 peopleUserEntity.setPeopleId(8836);
-//		 this.setPeopleBySession(req, peopleUserEntity);
+//		 this.setPeopleBySession(req, peopleUserEntity); 
 
 		AppEntity app = this.getApp(req);
 		// 完整的项目模板路径
@@ -225,8 +225,9 @@ public class MbbsAction extends com.mingsoft.bbs.action.BaseAction {
 			map.put(BbsParser.SUBJECT_SEARCH_LIST, subjectList);
 			map.put(BbsParser.PAGE, page);
 			map.put(IGeneralParser.REQUEST_PARAM, this.assemblyRequestMap(request));
-			map.put(BbsParser.POSTION, forumBiz.queryParent(this.getAppId(request), ModelCode.BBS_CATEGORY.toInt(),
-					forum.getCategoryId()));
+//			map.put(BbsParser.POSTION, forumBiz.queryParent(this.getAppId(request), ModelCode.BBS_CATEGORY.toInt(),
+//					forum.getCategoryId()));
+			map.put(BbsParser.POSTION, "");
 			String content = bbsParser.parse(html, app, forum, page, map);
 			this.outString(response, content);
 		}

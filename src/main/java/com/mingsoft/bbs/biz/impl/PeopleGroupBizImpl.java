@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mingsoft.bank.dao.IBankScoreDao;
-import com.mingsoft.bank.entity.BankScoreEntity;
+import net.mingsoft.bank.dao.IScoreDao;
+import net.mingsoft.bank.entity.ScoreEntity;
 import com.mingsoft.base.dao.IBaseDao;
 import com.mingsoft.basic.biz.IModelBiz;
 import com.mingsoft.basic.biz.impl.CategoryBizImpl;
@@ -82,7 +82,7 @@ public class PeopleGroupBizImpl  extends CategoryBizImpl implements IPeopleGroup
 	 * 积分类型持久化层
 	 */
 	@Autowired
-	private IBankScoreDao bankScoreDao;
+	private IScoreDao bankScoreDao;
 	
 	/**
 	 * 积分变更日志持久化曾
@@ -151,7 +151,7 @@ public class PeopleGroupBizImpl  extends CategoryBizImpl implements IPeopleGroup
 	@Override
 	public Map getPeopleGroupInfo(int peopleId,int appId) {
 		//获取积分类型的总数
-		List<BankScoreEntity> bankScoreList = bankScoreDao.queryPageByAppId(appId, null,"bs_id",false);
+		List<ScoreEntity> bankScoreList = null;//bankScoreDao.queryPageByAppId(appId, null,"bs_id",false);
 		//查询用户的积分情况
 		List<PeopleScoreBean> peopleScoreLogList = peopleScoreLogDao.queryByPeopleIdGroupByScoreTypeId(peopleId);
 		Map<String,Object> peopleGroupMap = new HashMap<String,Object>();

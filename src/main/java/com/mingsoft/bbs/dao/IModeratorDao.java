@@ -83,5 +83,5 @@ public interface IModeratorDao extends IBaseDao {
 	 * @param peopleName 会员帐号
 	 * @return  版主实体
 	 */
-	ModeratorEntity getByPeopleIdAndForumIds(@Param("appId")int appId,@Param("forumIds")List<Integer> forumIds,@Param("peopleId")int peopleId);
+	ModeratorEntity getByPeopleIdAndForumIds(@Param("appId")int appId,@Param("forumIds")int[] forumIds,@Param("peopleId")int peopleId); 
 }

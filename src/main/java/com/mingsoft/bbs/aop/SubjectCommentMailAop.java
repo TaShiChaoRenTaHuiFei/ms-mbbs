@@ -60,7 +60,7 @@ public class SubjectCommentMailAop extends BaseAop {
 			Map<String, String> content = new HashMap<String, String>(); 
 			content.put("commentContent", comment.getCommentContent());
 			content.put("subjectId", comment.getCommentBasicId() + "");
-			BasicEntity basic = basicBiz.getBasicEntity(comment.getCommentBasicId());
+			BasicEntity basic = basicBiz.getBasic(comment.getCommentBasicId());
 			PeopleEntity people = (PeopleEntity)peopleBiz.getEntity(basic.getBasicPeopleId());
 			content.put("subjectId", comment.getCommentBasicId() + "");
 			content.put("subjectTitle", basic.getBasicTitle() + "");

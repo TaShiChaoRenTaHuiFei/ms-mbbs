@@ -79,7 +79,7 @@ public class ForumAction extends BaseAction {
 	 */
 	@RequestMapping("/{categoryId}/getByForumId")
 	public void getByForumId(@PathVariable int categoryId, HttpServletRequest request, HttpServletResponse response) {
-		CategoryEntity categoryEntity = categoryBiz.getCategory(categoryId);
+		CategoryEntity categoryEntity = (CategoryEntity)categoryBiz.getEntity(categoryId);
 		this.outJson(response, JSONObject.toJSONStringWithDateFormat(categoryEntity, "yyyy-MM-dd HH:mm:ss"));
 	}
 }
