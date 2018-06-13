@@ -21,7 +21,6 @@ import com.mingsoft.people.biz.IPeopleBiz;
 import com.mingsoft.people.constant.e.PeopleEnum;
 import com.mingsoft.people.entity.PeopleEntity;
 import com.mingsoft.util.StringUtil;
-import com.mingsoft.util.proxy.Proxy;
 
 import cn.hutool.http.HttpUtil;
 

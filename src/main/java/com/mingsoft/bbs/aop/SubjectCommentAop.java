@@ -15,7 +15,6 @@ import com.mingsoft.bbs.entity.ForumEntity;
 import com.mingsoft.bbs.entity.SubjectEntity;
 import net.mingsoft.comment.biz.ICommentBiz;
 import net.mingsoft.comment.entity.CommentEntity;
-import net.mingsoft.message.constant.e.MessageTypeEnum;
 import com.mingsoft.people.biz.IPeopleUserBiz;
 import com.mingsoft.people.entity.PeopleUserEntity;
 import com.mingsoft.util.StringUtil;
