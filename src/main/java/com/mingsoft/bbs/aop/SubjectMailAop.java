@@ -16,7 +16,8 @@ import com.mingsoft.base.constant.Const;
 import com.mingsoft.bbs.biz.IForumBiz;
 import com.mingsoft.bbs.entity.SubjectEntity;
 import com.mingsoft.util.StringUtil;
-import com.mingsoft.util.proxy.Proxy;
+
+import cn.hutool.http.HttpUtil;
 
 /**
  * @author 王天培
@@ -51,7 +52,7 @@ public class SubjectMailAop extends BaseAop {
 		ShiroHttpServletRequest request = this.getType(jp, ShiroHttpServletRequest.class);
 		if (!StringUtil.isBlank(this.getCode(request))) {
 			SubjectEntity subject = this.getType(jp, SubjectEntity.class);
-			Map<String, String> params = new HashMap<String, String>();
+			Map<String, Object> params = new HashMap<String, Object>();
 			Map<String, String> content = new HashMap<String, String>();
 			content.put("subjectTitle", subject.getBasicTitle());
 			content.put("subjectId", subject.getBasicId() + "");
@@ -59,7 +60,7 @@ public class SubjectMailAop extends BaseAop {
 			params.put("modelCode", this.encryptByAES(this.getAppId(request), this.getCode(request)));
 			params.put("content",JSONObject.toJSONString(content));
 			if (subject != null) {
-				Proxy.post(this.getApp(request).getAppHostUrl() + "/mail/send.do", null, params, Const.UTF8);
+				HttpUtil.post(this.getApp(request).getAppHostUrl() + "/mail/send.do",  params);
 			}
 		}
 	}

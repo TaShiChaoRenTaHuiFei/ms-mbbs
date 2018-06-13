@@ -184,14 +184,14 @@ public class ListParser extends com.mingsoft.mdiy.parser.ListParser {
 					String peopleNickName =subject.getSubjectPeopleUser().getPeopleName();
 					//如果发帖人昵称没有则显示发帖人帐号
 					if(StringUtil.isBlank(peopleNickName)){
-						peopleNickName= subject.getSubjectPeopleUser().getPeopleUserNickName();
+						peopleNickName= subject.getSubjectPeopleUser().getPuNickname();
 					}
 					// 帖子作者。[field.people.name/]
 					htmlList = tabContent(htmlList, StringUtil.null2String(peopleNickName),FIELD_AUTHOR_NAME);
 					//判断发帖作者头像是否存在,如果存在,解析标签,如果不存在,执行默认值
-					if(!StringUtil.isBlank(subject.getSubjectPeopleUser().getPeopleUserIcon())){
+					if(!StringUtil.isBlank(subject.getSubjectPeopleUser().getPuIcon())){
 						// 用户头像[field.people.icon/]
-						htmlList = tabContent(htmlList, StringUtil.null2String(subject.getSubjectPeopleUser().getPeopleUserIcon()),FIELD_AUTHOR_ICON);
+						htmlList = tabContent(htmlList, StringUtil.null2String(subject.getSubjectPeopleUser().getPuIcon()),FIELD_AUTHOR_ICON);
 					}else{
 						htmlList = tabContent(htmlList, StringUtil.null2String(AUTHOR_ICON),FIELD_AUTHOR_ICON);
 					}

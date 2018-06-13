@@ -171,10 +171,10 @@ public class ChildCommnetListParser  extends IParser{
 					String peopleNickName = comment.getCommentPeopleUser().getPeopleName();
 					// 替换评论内容
 					htmlList += tabContent(tabHtml, comment.getCommentContent(), COMLIST_CONTENT_FIELD);
-					String peopelUserIcon = String.valueOf(comment.getCommentPeopleUser().getPeopleUserIcon());
+					String peopelUserIcon = String.valueOf(comment.getCommentPeopleUser().getPuIcon());
 					// 如果评论人昵称没有则显示评论人帐号
 					if (StringUtil.isBlank(peopleNickName)) {
-						peopleNickName = comment.getCommentPeopleUser().getPeopleUserNickName();
+						peopleNickName = comment.getCommentPeopleUser().getPuNickname();
 					}
 					htmlList = tabContent(htmlList, peopelUserIcon, COMLIST_PEOPLEICON);
 					// 如果评论人昵称没有则显示评论人帐号

@@ -35,12 +35,14 @@ import com.mingsoft.bbs.constant.e.SubjectEnum;
 import com.mingsoft.bbs.entity.ForumEntity;
 import com.mingsoft.bbs.entity.SubjectEntity;
 import com.mingsoft.bbs.parser.BbsParser;
-import com.mingsoft.mdiy.biz.IModelTemplateBiz;
-import com.mingsoft.mdiy.entity.ModelTemplateEntity;
+import com.mingsoft.mdiy.biz.IPageBiz;
+import com.mingsoft.mdiy.entity.PageEntity;
 import com.mingsoft.parser.IParser;
 import com.mingsoft.people.entity.PeopleUserEntity;
 import com.mingsoft.util.PageUtil;
 import com.mingsoft.util.StringUtil;
+
+import net.mingsoft.basic.util.BasicUtil;
 
 /**
  * 铭飞MBbs论坛系统
@@ -71,7 +73,7 @@ public class MbbsAction extends com.mingsoft.bbs.action.BaseAction {
 	 * 模板模型
 	 */
 	@Autowired
-	private IModelTemplateBiz modelTemplateBiz;
+	private IPageBiz pageBiz;
 
 	/**
 	 * 帖子业务层的注入
@@ -158,7 +160,10 @@ public class MbbsAction extends com.mingsoft.bbs.action.BaseAction {
 		int recordCount = subjectBiz.countByForumId(app.getAppId(), 0, SubjectEnum.DISPLAY);
 		PageUtil page = new PageUtil(curPageNo, pageSize, recordCount, listLinkPath);
 		// ============================
-		ModelTemplateEntity mte = modelTemplateBiz.getEntity(app.getAppId(), Const.MBBS + "/" + diy);
+		PageEntity _page = new PageEntity();
+		_page.setPageAppId(BasicUtil.getAppId());
+		_page.setPageKey(Const.MBBS + "/" + diy);
+		PageEntity mte = (PageEntity)pageBiz.getEntity(_page);
 		if (mte == null) {
 			try {
 				resp.sendRedirect("/error/404.do");
@@ -168,7 +173,7 @@ public class MbbsAction extends com.mingsoft.bbs.action.BaseAction {
 				e.printStackTrace();
 			}
 		}
-		String html = this.readTemplate(mte.getModelTemplatePath(), req);
+		String html = this.readTemplate(mte.getPagePath(), req);
 		// ====================
 		Map map = new HashMap();
 		map.put(IGeneralParser.LIST_LINK_PATH, listLinkPath);

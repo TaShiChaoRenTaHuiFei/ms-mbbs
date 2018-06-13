@@ -93,7 +93,7 @@ public class SubjectCommentAop extends BaseAop{
 				if(people!=null){
 					String peopleName = people.getPeopleName();
 					if(StringUtil.isBlank(peopleName)){
-						peopleName=people.getPeopleUserNickName();
+						peopleName=people.getPuNickname();
 					}
 					subject.setSubjectLastCommentPeopleName(peopleName);
 					subjectBiz.updateStatisticsInfo(subject);

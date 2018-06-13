@@ -23,6 +23,8 @@ import com.mingsoft.people.entity.PeopleEntity;
 import com.mingsoft.util.StringUtil;
 import com.mingsoft.util.proxy.Proxy;
 
+import cn.hutool.http.HttpUtil;
+
 /**
  * @author 王天培
  * @version 版本号：100-000-000<br/>
@@ -56,7 +58,7 @@ public class SubjectCommentMailAop extends BaseAop {
 		ShiroHttpServletRequest request = this.getType(jp, ShiroHttpServletRequest.class);
 		if (!StringUtil.isBlank(this.getCode(request))) {
 			CommentEntity comment = this.getType(jp, CommentEntity.class);
-			Map<String, String> params = new HashMap<String, String>();
+			Map<String, Object> params = new HashMap<String, Object>();
 			Map<String, String> content = new HashMap<String, String>(); 
 			content.put("commentContent", comment.getCommentContent());
 			content.put("subjectId", comment.getCommentBasicId() + "");
@@ -64,7 +66,7 @@ public class SubjectCommentMailAop extends BaseAop {
 			PeopleEntity people = (PeopleEntity)peopleBiz.getEntity(basic.getBasicPeopleId());
 			content.put("subjectId", comment.getCommentBasicId() + "");
 			content.put("subjectTitle", basic.getBasicTitle() + "");
-			content.put("userName", people.getPeopleUser().getPeopleUserNickName());
+			content.put("userName", people.getPeopleUser().getPuNickname());
 			params.put("thrid", "sendcloud"); //使用第三方平台发送，确保用户能收到
 			params.put("modelCode", this.encryptByAES(this.getAppId(request), this.getCode(request)));
 			
@@ -74,7 +76,7 @@ public class SubjectCommentMailAop extends BaseAop {
 			params.put("content", JSONObject.toJSONString(content));
 			
 			if (comment != null) {
-				Proxy.post(this.getApp(request).getAppHostUrl() + "/mail/send.do", null, params, Const.UTF8);
+				HttpUtil.post(this.getApp(request).getAppHostUrl() + "/mail/send.do",  params);
 
 			}
 		}

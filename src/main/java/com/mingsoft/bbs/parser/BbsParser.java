@@ -716,15 +716,15 @@ public class BbsParser extends IGeneralParser {
 			String peopleNickName =subject.getSubjectPeopleUser().getPeopleName();
 			//如果发帖人昵称没有则显示发帖人帐号
 			if(StringUtil.isBlank(peopleNickName)){
-				peopleNickName= subject.getSubjectPeopleUser().getPeopleUserNickName();
+				peopleNickName= subject.getSubjectPeopleUser().getPuNickname();
 			}
 			//解析帖子作者标签
 			htmlContent = new AuthorParser(htmlContent, peopleNickName).parse();
 				
 			//判断是否存在帖子作者头像,如果存在解析标签,不存在,执行默认值
-			if(!StringUtil.isBlank(subject.getSubjectPeopleUser().getPeopleUserIcon())){
+			if(!StringUtil.isBlank(subject.getSubjectPeopleUser().getPuIcon())){
 				//解析帖子作者头像标签
-				htmlContent = new AuthorIconParser(htmlContent, subject.getSubjectPeopleUser().getPeopleUserIcon()).parse();
+				htmlContent = new AuthorIconParser(htmlContent, subject.getSubjectPeopleUser().getPuIcon()).parse();
 			}else{
 				//执行帖子作者头像默认值
 				htmlContent = new AuthorIconParser(htmlContent,AUTHOR_ICON).parse();

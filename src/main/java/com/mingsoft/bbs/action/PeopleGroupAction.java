@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alibaba.fastjson.JSONArray;
-import net.mingsoft.bank.biz.IScoreBiz;
-import net.mingsoft.bank.entity.ScoreEntity;
 import com.mingsoft.basic.biz.ICategoryBiz;
 import com.mingsoft.basic.constant.Const;
 import com.mingsoft.basic.constant.e.CookieConstEnum;
@@ -58,11 +56,6 @@ public class PeopleGroupAction extends BaseAction{
 	@Autowired
 	private IFunctionBiz functionBiz;
 	
-	/**
-	 * 注入积分类型业务层
-	 */
-	@Autowired
-	private IScoreBiz bankScoreBiz;
 	
 	/**
 	 * 组功能关系绑定业务层
@@ -102,11 +95,9 @@ public class PeopleGroupAction extends BaseAction{
 		int modelId = this.getModelCodeId(request, com.mingsoft.bbs.constant.ModelCode.BBS_PEOPLE_CATEGORY);
 		//获取用户分组的模块id
 		List<PeopleGroupEntity> peopleGroupList = peopleGroupBiz.queryByAppIdAndModelId(appId, modelId,null,false);
-		List<ScoreEntity> bankScoreList = null;//bankScoreBiz.queryPageByAppId(appId, null,"bs_id",false);
 		//
 		//查询该站点下所有的bbs对应的功能列表
 		model.addAttribute("peopleGroupList", peopleGroupList);
-		model.addAttribute("bankScoreList", bankScoreList);
 		return view("/bbs/peoplegroup/people_group_list");
 	}
 	
@@ -122,12 +113,10 @@ public class PeopleGroupAction extends BaseAction{
 		//查询功能列表
 		List<FunctionEntity> funcList = this.functionBiz.queryByAppId(appId);
 		//查询积分类型列表
-		List<ScoreEntity> bankScoreList = null;//this.bankScoreBiz.queryPageByAppId(appId, null,"bs_id",false);
 		int modelId = this.getModelCodeId(request, com.mingsoft.bbs.constant.ModelCode.BBS_PEOPLE_CATEGORY);
 		PeopleGroupEntity lastPeopleGroup = this.peopleGroupBiz.getLastOrFirstPeopleGroup(appId,  true);
 		//获取上一个等级的用户组
 		model.addAttribute("funcList", funcList);
-		model.addAttribute("bankScoreList", bankScoreList);
 		model.addAttribute("appId", appId);
 		model.addAttribute("modelId", modelId);
 		model.addAttribute("lastPeopleGroup", lastPeopleGroup);
@@ -161,9 +150,7 @@ public class PeopleGroupAction extends BaseAction{
 		//查询功能列表
 		List<FunctionEntity> funcList = this.functionBiz.queryByAppId(appId);
 		//查询积分类型列表
-		List<ScoreEntity> bankScoreList = null;//this.bankScoreBiz.queryPageByAppId(appId, null,"bs_id",false);
 		model.addAttribute("funcList", funcList);
-		model.addAttribute("bankScoreList", bankScoreList);
 		model.addAttribute("appId", appId);
 		model.addAttribute("groupFunctionList", groupFunctionList);
 		model.addAttribute("forumScoreList", forumScoreList);

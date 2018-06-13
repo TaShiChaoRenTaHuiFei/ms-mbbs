@@ -8,8 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import net.mingsoft.bank.dao.IScoreDao;
-import net.mingsoft.bank.entity.ScoreEntity;
 import com.mingsoft.base.dao.IBaseDao;
 import com.mingsoft.basic.biz.IModelBiz;
 import com.mingsoft.basic.biz.impl.CategoryBizImpl;
@@ -79,12 +77,6 @@ public class PeopleGroupBizImpl  extends CategoryBizImpl implements IPeopleGroup
 	private IPeopleGroupScoreDao peopleGroupScoreDao;
 	
 	/**
-	 * 积分类型持久化层
-	 */
-	@Autowired
-	private IScoreDao bankScoreDao;
-	
-	/**
 	 * 积分变更日志持久化曾
 	 */
 	@Autowired
@@ -150,55 +142,14 @@ public class PeopleGroupBizImpl  extends CategoryBizImpl implements IPeopleGroup
 	
 	@Override
 	public Map getPeopleGroupInfo(int peopleId,int appId) {
-		//获取积分类型的总数
-		List<ScoreEntity> bankScoreList = null;//bankScoreDao.queryPageByAppId(appId, null,"bs_id",false);
 		//查询用户的积分情况
 		List<PeopleScoreBean> peopleScoreLogList = peopleScoreLogDao.queryByPeopleIdGroupByScoreTypeId(peopleId);
 		Map<String,Object> peopleGroupMap = new HashMap<String,Object>();
 		ModelEntity model = modelDao.getEntityByModelCode(com.mingsoft.bbs.constant.ModelCode.BBS_PEOPLE_CATEGORY.toString());
-		if(bankScoreList!=null && bankScoreList.size()>0){
-			//默认是需要第一个等级的
-			PeopleGroupEntity peopleGroup = this.getLastOrFirstPeopleGroup(appId, false);
-			peopleGroupMap.put("peopleGroup", peopleGroup);
-			peopleGroupMap.put("peopleScore", peopleScoreLogList);
-			//如果无积分信息则默认表示是第一级
-			if(peopleScoreLogList==null){
-				return peopleGroupMap;
-			}
-			//如果积分信息与实际绑定的积分类型不一致也表示是第一级用户组
-			if(peopleScoreLogList.size()<bankScoreList.size()){
-				return peopleGroupMap;
-			}
-			//获取所有用户组
-			List<PeopleGroupEntity> peopleGroupList = this.peopleGroupDao.queryByAppIdAndModelId(appId,  model.getModelId(),"pgs_bs_id",true);
-			for(int i=0;i<peopleGroupList.size();i++){
-				//获取第i个用户组
-				peopleGroup = peopleGroupList.get(i);
-				List<PeopleGroupScoreEntity> peopleScoreList = peopleGroup.getPeopleGroupScoreList();
-				boolean isGroup = false;
-				//遍历用户的每一种积分类型值是否在某个用户组内
-				for(int j=0;j<peopleScoreList.size();j++){
-					PeopleScoreBean peopleScore = peopleScoreLogList.get(j);
-					double totalScore = peopleScore.getPeopleScoreTotalScore();
-					PeopleGroupScoreEntity curPeopleGroupScore = peopleScoreList.get(j);
-					if((totalScore>=curPeopleGroupScore.getPeopleGroupScoreMinScore() && totalScore<curPeopleGroupScore.getPeopleGroupScoreMaxScore())){
-						isGroup = true;
-						break;
-					}
-				}
-				//如果循环是正常跳出的表示，他的每个积分类型的值都符合条件，则表示用户属于该用户组
-				if(isGroup){
-					break;
-				}
-			}
-			peopleGroupMap.put("peopleGroup", peopleGroup);
-			return peopleGroupMap;
-		}else{
 			//默认是需要第一个等级的
 			PeopleGroupEntity peopleGroup = this.getLastOrFirstPeopleGroup(appId, false);
 			peopleGroupMap.put("peopleGroup", peopleGroup);
 			return peopleGroupMap;
-		}
 	}
 
 	@Override

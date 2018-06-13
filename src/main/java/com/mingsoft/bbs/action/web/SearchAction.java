@@ -85,7 +85,7 @@ public class SearchAction extends BaseAction {
 		Map<String, String[]> field = new HashMap<String, String[]>();
 		field = request.getParameterMap(); // 读取请求字段
 		// 获取对应搜索模型
-		SearchEntity search = (SearchEntity) searchBiz.getByIdAndAppId(searchId, appId);
+		SearchEntity search = (SearchEntity) searchBiz.getById(searchId);
 		if (search != null) {
 			String webSiteTmpPath = "";
 			if (isMobileDevice(request) && !StringUtil.isBlank(app.getAppMobileStyle())) {
