@@ -10,11 +10,12 @@
 	<artifactId>ms-mbbs</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
+
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>ms-mbbs tools Library</description>
 	<url>https://github.com/ming-soft/ms-mbbs</url>
 	<licenses>
-		<license>
+		<license> 
 			<name>The MIT License (MIT)</name>
 			<url>http://mit-license.org</url>
 		</license>
@@ -48,17 +49,13 @@
 	<properties>
 		<java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<ms.base.version>1.0.2-SNAPSHOT</ms.base.version>
-		<ms.basic.version>1.0.3-SNAPSHOT</ms.basic.version>
-		<ms.mdiy.version>1.0.2-SNAPSHOT</ms.mdiy.version>
-		<ms.mcms.version>1.0.0-SNAPSHOT</ms.mcms.version>
-		<ms.mpeople.version>1.0.0-SNAPSHOT</ms.mpeople.version>
-		<ms.mbank.version>1.0.0-SNAPSHOT</ms.mbank.version>
-		<ms.mail.version>1.0.0-SNAPSHOT</ms.mail.version>
-		<ms.mattention.version>1.0.0-SNAPSHOT</ms.mattention.version>
-		<ms.morder.version>1.0.0-SNAPSHOT</ms.morder.version>
+		<ms.base.version>1.0.5-SNAPSHOT</ms.base.version>
+		<ms.basic.version>1.0.6-SNAPSHOT</ms.basic.version>
+		<ms.mdiy.version>1.0.5-SNAPSHOT</ms.mdiy.version>
+		<ms.mcms.version>4.6.4-SNAPSHOT</ms.mcms.version>
+		<ms.mpeople.version>1.0.4</ms.mpeople.version>
+		<ms.mattention.version>1.0.0</ms.mattention.version>
 		<ms.mcomment.version>1.0.0-SNAPSHOT</ms.mcomment.version>
-		<ms.mmessage.version>1.0.0-SNAPSHOT</ms.mmessage.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -94,18 +91,11 @@
 		</dependency>
 		<dependency>
 			<groupId>net.mingsoft</groupId>
-			<artifactId>ms-mmessage</artifactId>
-			<version>${ms.mmessage.version}</version>
-			<classifier>classes</classifier>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.mingsoft</groupId>
 			<artifactId>ms-mcms</artifactId>
 			<version>${ms.mcms.version}</version>
 			<classifier>classes</classifier>
 			<scope>provided</scope>
-		</dependency>
+		</dependency>		
 		<dependency>
 			<groupId>net.mingsoft</groupId>
 			<artifactId>ms-mcms</artifactId>
@@ -125,26 +115,7 @@
 			<version>${ms.mpeople.version}</version>
 			<type>war</type>
 		</dependency>
-		<dependency>
-			<groupId>net.mingsoft</groupId>
-			<artifactId>ms-mbank</artifactId>
-			<version>${ms.mbank.version}</version>
-			<classifier>classes</classifier>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.mingsoft</groupId>
-			<artifactId>ms-mbank</artifactId>
-			<version>${ms.mbank.version}</version>
-			<type>war</type>
-		</dependency>
-		<!-- bank依赖order -->
-		<dependency>
-			<groupId>net.mingsoft</groupId>
-			<artifactId>ms-morder</artifactId>
-			<version>${ms.morder.version}</version>
-			<type>war</type>
-		</dependency>
+		
 
 		<dependency>
 			<groupId>net.mingsoft</groupId>
@@ -159,7 +130,6 @@
 			<version>${ms.mattention.version}</version>
 			<type>war</type>
 		</dependency>
-
 		<dependency>
 			<groupId>net.mingsoft</groupId>
 			<artifactId>ms-mcomment</artifactId>
@@ -173,10 +143,19 @@
 			<version>${ms.mcomment.version}</version>
 			<type>war</type>
 		</dependency>
-		<dependency>
-			<groupId>net.mingsoft</groupId>
-			<artifactId>ms-mmessage</artifactId>
-			<version>${ms.mcomment.version}</version>
+		<!-- 开发依赖，主要方便业务开发 -->
+		<dependency> 
+			<groupId>net.mingsoft</groupId> 
+			<artifactId>ms-msend</artifactId> 
+			<version>1.0.4</version> 
+			<classifier>classes</classifier> 
+			<scope>provided</scope>
+		</dependency>
+		<!-- 消息管理，消息的配置、模板、日志管理 -->
+		<dependency> 
+			<groupId>net.mingsoft</groupId> 
+			<artifactId>ms-msend</artifactId> 
+			<version>1.0.4</version> 
 			<type>war</type>
 		</dependency>
 	</dependencies>
@@ -184,55 +163,32 @@
 	<build>
 		<resources>
 			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>**/*.properties</include>
-					<include>**/*.xml</include>
-				</includes>
-				<filtering>false</filtering>
-			</resource>
-			<resource>
 				<directory>src/main/java</directory>
 				<includes>
-					<include>**/*.properties</include>
 					<include>**/*.xml</include>
+					<include>**/*.properties</include>
 				</includes>
-				<filtering>false</filtering>
+				<excludes>
+					<exclude>*.sh</exclude>
+					<exclude>static/</exclude>
+				</excludes>
 			</resource>
 		</resources>
 		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-3</version>
-				<configuration>
-					<descriptors>
-						<descriptor>assembly.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
-					<showDeprecation>true</showDeprecation>
-					<showWarnings>true</showWarnings>
-					<compilerId>eclipse</compilerId>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>UTF-8</encoding>
 					<compilerArguments>
 						<verbose />
-						<bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>
+						<bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>
 					</compilerArguments>
+
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.codehaus.plexus</groupId>
-						<artifactId>plexus-compiler-eclipse</artifactId>
-						<version>2.1</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -281,40 +237,8 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<configuration>
-					<charset>UTF-8</charset>
-					<encoding>UTF-8</encoding>
-					<docencoding>UTF-8</docencoding>
-					<javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>2.6</version>
 				<configuration>
 					<webResources>
 						<resource>
@@ -330,67 +254,21 @@
 						</resource>
 					</webResources>
 					<attachClasses>true</attachClasses>
-					<warSourceExcludes> */web.xml</warSourceExcludes>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<!-- <packagingExcludes>WEB-INF/web.xml,WEB-INF/lib/**/*,templets/,WEB-INF/classes/*.xml,WEB-INF/classes/*.properties,*.sh</packagingExcludes>
-					<overlays>
-						<overlay>
-							<groupId>net.mingsoft</groupId>
-							<artifactId>ms-basic</artifactId>
-							<excludes>
-								<exclude>*/</exclude>
-							</excludes>
-						</overlay>
-						<overlay>
-							<groupId>net.mingsoft</groupId>
-							<artifactId>ms-mdiy</artifactId>
-							<excludes>
-								<exclude>*/</exclude>
-							</excludes>
-						</overlay>
-						<overlay>
-							<groupId>net.mingsoft</groupId>
-							<artifactId>ms-mcms</artifactId>
-							<excludes>
-								<exclude>*/</exclude>
-							</excludes>
-						</overlay>
-						<overlay>
-							<groupId>net.mingsoft</groupId>
-							<artifactId>ms-mpeople</artifactId>
-							<excludes>
-								<exclude>*/</exclude>
-							</excludes>
-						</overlay>
-						<overlay>
-							<groupId>net.mingsoft</groupId>
-							<artifactId>ms-mbank</artifactId>
-							<excludes>
-								<exclude>*/</exclude>
-							</excludes>
-						</overlay>
-						<overlay>
-							<groupId>net.mingsoft</groupId>
-							<artifactId>ms-morder</artifactId>
-							<excludes>
-								<exclude>*/</exclude>
-							</excludes>
-						</overlay>
-						<overlay>
-							<groupId>net.mingsoft</groupId>
-							<artifactId>ms-mattention</artifactId>
-							<excludes>
-								<exclude>*/</exclude>
-							</excludes>
-						</overlay>
-						<overlay>
-							<groupId>net.mingsoft</groupId>
-							<artifactId>ms-mcomment</artifactId>
-							<excludes>
-								<exclude>*/</exclude>
-							</excludes>
-						</overlay>
-					</overlays> -->
+					<!-- <warSourceExcludes> */web.xml,static</warSourceExcludes> <failOnMissingWebXml>false</failOnMissingWebXml> 
+						<packagingExcludes>ms.install,html/,static/,temp,upgrader,WEB-INF/web.xml,WEB-INF/lib/,templets/,WEB-INF/classes/*.xml,WEB-INF/classes/*.properties,*.sh</packagingExcludes> 
+						<overlays> <overlay> <groupId>net.mingsoft</groupId> <artifactId>ms-basic</artifactId> 
+						<excludes> <exclude>*/</exclude> </excludes> </overlay> <overlay> <groupId>net.mingsoft</groupId> 
+						<artifactId>ms-mdiy</artifactId> <excludes> <exclude>*/</exclude> </excludes> 
+						</overlay> <overlay> <groupId>net.mingsoft</groupId> <artifactId>ms-mcomment</artifactId> 
+						<excludes> <exclude>*/</exclude> </excludes> </overlay> <overlay> <groupId>net.mingsoft</groupId> 
+						<artifactId>ms-morder</artifactId> <excludes> <exclude>*/</exclude> </excludes> 
+						</overlay> <overlay> <groupId>net.mingsoft</groupId> <artifactId>ms-mcms</artifactId> 
+						<excludes> <exclude>*/</exclude> </excludes> </overlay> <overlay> <groupId>net.mingsoft</groupId> 
+						<artifactId>ms-mbank</artifactId> <excludes> <exclude>*/</exclude> </excludes> 
+						</overlay> <overlay> <groupId>net.mingsoft</groupId> <artifactId>ms-mattention</artifactId> 
+						<excludes> <exclude>*/</exclude> </excludes> </overlay> <overlay> <groupId>net.mingsoft</groupId> 
+						<artifactId>ms-mpeople</artifactId> <excludes> <exclude>*/</exclude> </excludes> 
+						</overlay> </overlays> -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -400,7 +278,7 @@
 					<arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!--  plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
 				<version>1.6.7</version>
@@ -424,7 +302,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin-->
 		</plugins>
 		<defaultGoal>compile</defaultGoal>
 		<finalName>ms-mbbs</finalName>
